@@ -42,31 +42,37 @@ We are going to use some abbreviations and placeholders:
 
 ## Installation instructions
 
-* Download the [latest SA-SH package (20190621)](https://docs.spamhaustech.com/_static/software/SA-spamhaus.tgz) into any directory of your choice
-
-* Extract it by giving
+Start with downloading the latest package:
 
 ```
-	# tar xvfz SA-spamhaus.tgz
+	$ git clone https://github.com/spamhaus/spamassassin-dqs
+	Cloning into 'spamassassin-dqs'...
+	remote: Enumerating objects: 11, done.
+	remote: Counting objects: 100% (11/11), done.
+	remote: Compressing objects: 100% (9/9), done.
+	remote: Total 11 (delta 0), reused 11 (delta 0), pack-reused 0
+	Unpacking objects: 100% (11/11), done.
 ```
 
-A subdirectory called `SA-spamhaus-20190621` will be created. Within it, besides licensing information, you will find three files:
+A subdirectory called `spamassassin-dqs` will be created. Within it you will find the following files:
 
- * `SH.pm`. This is a dedicated SA plugin written by SH that overcomes some of SA's limitations
- * `sh.cf`. This file contains lookup redefinitions and will need to be edited (see below)
- * `sh_scores.cf`. In this file we override some of SA's default rule scoring
+- `README.md`. This is just a pointer to this document.
+- `SH.pm`. This is a dedicated SA plugin written by SH that overcomes some of SA's limitations
+- `sh.cf`. This file contains lookup redefinitions and will need to be edited (see below)
+- `sh_scores.cf`. In this file we override some of SA's default rule scoring
+- `LICENSE`. The Apache software license
+- `NOTICE`. A file containing copyright notices
 
-* Make a copy of these files into the SA *configuration directory* (it may require root privileges).
-
-Now, assuming your DQS key is for instance `aip7yig6sahg6ehsohn5shco3z`, execute the following command inside the *configuration directory*
+Now it's time to configure your DQS key. Assuming your key is `aip7yig6sahg6ehsohn5shco3z`, execute the following command:
 
 ```
-	# sed -i -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
+	$ cd spamassassin-dqs
+	$ sed -i -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
 ```
 
 There will be no output, but your key will be placed inside `sh.cf` in all the needed places.
 
-Finally, edit `sh.cf` with your editor of choice, and take a look at the first line:
+Edit `sh.cf` with your editor of choice, and take a look at the first line:
 
 ```
 loadplugin       Mail::SpamAssassin::Plugin::SH <config_directory\>/SH.pm
@@ -76,6 +82,14 @@ You will need to replace `<config_directory\>` with your actual *configuration d
 
 ```
 loadplugin       Mail::SpamAssassin::Plugin::SH /etc/mail/spamassassin/SH.pm
+```
+
+Finally, copy the files in Spamassassin's *configuration directory*. Assuming it is `/etc/mail/spamassassin`, you'll need to issue these commands:
+
+```
+	# cp SH.pm /etc/mail/spamassassin
+	# cp sh.cf /etc/mail/spamassassin
+	# cp sh_scores.cf /etc/mail/spamassassin
 ```
 
 Now test the setup by running:
@@ -96,8 +110,11 @@ This function checks the domain used in the HELO/EHLO string against DBL and ZRD
  * `check_sh_headers`. 
 This function takes the domain out of the *From* , *Reply-to* , *Envelope From*, *Return-Path* header lines and then checks the domain against DBL and ZRD.
 
- * `check_sh_body`.
+ * `check_sh_bodyemail`.
 This function scans the email body looking for email addresses. For all email addresses found, it extracts the domain and check it against DBL and ZRD. This approach has been proven useful, for example, in some dating scams campaign.
+
+ * `check_sh_bodyemail_ns`.
+This function scans the email body looking for email addresses. For all email addresses found, it extracts the domain and then cheks it's authoritative nameservers IPs in SBL (beta, not used but you are encouraged to try it)
 
  * `check_sh_reverse`
 This function checks the reverse DNS (rDNS) of the last untrusted relay in both DBL and ZRD
@@ -105,18 +122,22 @@ This function checks the reverse DNS (rDNS) of the last untrusted relay in both 
  * `check_sh_bodyuri_a`
  This function scans the email body and looks for URLs; when one is found the hostname is then resolved and the resulting IP address is checked in SBL and CSS
 
-## Final recommendations
-
-The configuration in the VBSpam survey makes use exclusively of our data, as our goal was certifying their quality and keep an eye on how we perform in the field. So, malware is blocked using just IP addresses and domain real-time data.
+ * `check_sh_bodyuri_ns`
+ This function scans the email body and looks for URLs; when one is found it takes the domain's authoritative nameservers IPs and checks them in SBL ( domain and then cheks it's authoritative nameservers IPs in SBL (beta, not used but you are encouraged to try it
+ 
+We already said that the configuration in the VBSpam survey make use exclusively of our data, as our goal was certifying their quality and keep an eye on how we perform in the field.
 
 While the results are reasonably good, the malware/phishing scoring can certainly be improved through some additional actions that we recommend.
 
-Nowadays the rule of thumb for receiving email should be to stay defensive, that is why we recommend to do basic attachment filtering by dropping all emails that contains potentially hazardous attachments, like *at least* all file extensions that match this regex:
+- Install an antivirus software on your mailserver
+- Nowadays the rule of thumb for receiving email should be to stay defensive, that is why we recommend to do basic attachment filtering by dropping all emails that contains potentially hazardous attachments, like *at least* all file extensions that match this regex:
 
 ```
 (exe|vbs|pif|scr|bat|cmd|com|cpl|dll|cpgz|chm|js|jar|wsf)
 ```
 
-You should also drop, by default, all Office documents with macros.
+- You should also drop, by default, all Office documents with macros.
 
-The second recommendation is to run an AV (Anti-Virus) engine on your server, to scan all mail attachments. This can be easily done with SpamAssassin, using the AV product of your choice.
+## Support and feedback
+
+We would be happy to receive some feedback from you. If you notice any problem with this installation, please drop us a note at datafeed-support@spamteq.com and we'll try to do our best to help you.
