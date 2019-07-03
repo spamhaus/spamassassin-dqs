@@ -93,6 +93,13 @@ Now it's time to configure your DQS key. Assuming your key is `aip7yig6sahg6ehso
 	$ sed -i -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
 ```
 
+If you are on FreeBSD then the command slightly changes:
+
+```
+	$ cd spamassassin-dqs
+	$ sed -i "" -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
+```
+
 There will be no output, but your key will be placed inside `sh.cf` in all the needed places.
 
 Edit `sh.cf` with your editor of choice, and take a look at the first line:
