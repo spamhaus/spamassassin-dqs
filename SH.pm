@@ -112,28 +112,38 @@ sub _get_headers_domains {
   my @domains;
   if (defined($pms->get( 'From:addr' ))) {
     my $this_domain = $self->{'main'}->{'registryboundaries'}->uri_to_domain($pms->get( 'From:addr' ));
-    dbg("SHPlugin: (_get_headers_domains) found domain ".$this_domain." in From:addr");
-    push @domains, $this_domain;
+    if ($this_domain) {
+      dbg("SHPlugin: (_get_headers_domains) found domain ".$this_domain." in From:addr");
+      push @domains, $this_domain;
+    }
   }
   if (defined($pms->get( 'Reply-To:addr' ))) {
     my $this_domain = $self->{'main'}->{'registryboundaries'}->uri_to_domain($pms->get( 'Reply-To:addr' ));
-    dbg("SHPlugin: (_get_headers_domains) found domain ".$this_domain." in Reply-To:addr");
-    push @domains, $this_domain;
+    if ($this_domain) {
+      dbg("SHPlugin: (_get_headers_domains) found domain ".$this_domain." in Reply-To:addr");
+      push @domains, $this_domain;
+    }
   }
   if (defined($pms->get( 'Sender:addr' ))) {
     my $this_domain = $self->{'main'}->{'registryboundaries'}->uri_to_domain($pms->get( 'Sender:addr' ));
-    dbg("SHPlugin: (_get_headers_domains) found domain ".$this_domain." in Sender:addr");
-    push @domains, $this_domain;
+    if ($this_domain) {
+      dbg("SHPlugin: (_get_headers_domains) found domain ".$this_domain." in Sender:addr");
+      push @domains, $this_domain;
+    }
   }
   if (defined($pms->get( 'EnvelopeFrom:addr' ))) {
     my $this_domain = $self->{'main'}->{'registryboundaries'}->uri_to_domain($pms->get( 'EnvelopeFrom:addr' ));
-    dbg("SHPlugin: (_get_headers_domains) found domain ".$this_domain." in EnvelopeFrom:addr");
-    push @domains, $this_domain;
+    if ($this_domain) {
+      dbg("SHPlugin: (_get_headers_domains) found domain ".$this_domain." in EnvelopeFrom:addr");
+      push @domains, $this_domain;
+    }
   }
   if (defined($pms->get( 'Return-Path:addr' ))) {
     my $this_domain = $self->{'main'}->{'registryboundaries'}->uri_to_domain($pms->get( 'Return-Path:addr' ));
-    dbg("SHPlugin: (_get_headers_domains) found domain ".$this_domain." in Return-Path:addr");
-    push @domains, $this_domain;
+    if ($this_domain) {
+      dbg("SHPlugin: (_get_headers_domains) found domain ".$this_domain." in Return-Path:addr");
+      push @domains, $this_domain;
+    }
   }
   @domains = uniq(@domains);
   @domains = grep /\S/, @domains;
