@@ -40,6 +40,15 @@ If you use an RPM based distribution, install the module by executing:
 	# yum install perl-List-MoreUtils 
 ```
 
+If you use FreeBSD try:
+
+```
+	# portmaster lang/p5-List-MoreUtils 
+```
+or
+```
+	# pkg install p5-List-MoreUtils 
+```
 The scores in this configuration files are weighted for a `required_score` of 4 instead of the default 6. If you use a different `required_score` adjust the values accordingly.
 
 ## Conventions
