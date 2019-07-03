@@ -123,7 +123,7 @@ This function checks the reverse DNS (rDNS) of the last untrusted relay in both 
  This function scans the email body and looks for URLs; when one is found the hostname is then resolved and the resulting IP address is checked in SBL and CSS
 
  * `check_sh_bodyuri_ns`
- This function scans the email body and looks for URLs; when one is found it takes the domain's authoritative nameservers IPs and checks them in SBL ( domain and then cheks it's authoritative nameservers IPs in SBL (beta, not used but you are encouraged to try it)
+ This function scans the email body and looks for URLs; when one is found it takes the domain's authoritative nameservers IPs and checks them in SBL (beta, not used but you are encouraged to try it)
  
 ## Final recommendations
  
