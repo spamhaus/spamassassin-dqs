@@ -98,7 +98,7 @@ Now test the setup by running:
 	# spamassassin --lint
 ```
 	
-This command checks the whole SA installation; if you don't see any output then congratulations! You successfully installed SH's SA setup.
+This command checks the whole SA installation; if you don't see any output then congratulations! You successfully installed SH's SA setup. You only need to restart Spamassassin to have the plugin loaded.
 
 ## Plugin internals
 
@@ -124,6 +124,8 @@ This function checks the reverse DNS (rDNS) of the last untrusted relay in both 
 
  * `check_sh_bodyuri_ns`
  This function scans the email body and looks for URLs; when one is found it takes the domain's authoritative nameservers IPs and checks them in SBL ( domain and then cheks it's authoritative nameservers IPs in SBL (beta, not used but you are encouraged to try it
+ 
+## Final recommendations
  
 We already said that the configuration in the VBSpam survey make use exclusively of our data, as our goal was certifying their quality and keep an eye on how we perform in the field.
 
