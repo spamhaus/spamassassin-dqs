@@ -75,13 +75,13 @@ There will be no output, but your key will be placed inside `sh.cf` in all the n
 Edit `sh.cf` with your editor of choice, and take a look at the first line:
 
 ```
-loadplugin       Mail::SpamAssassin::Plugin::SH <config_directory\>/SH.pm
+	loadplugin       Mail::SpamAssassin::Plugin::SH <config_directory\>/SH.pm
 ```
 
 You will need to replace `<config_directory\>` with your actual *configuration directory*. So, for example, if your *configuration directory* is `/etc/mail/spamassassin`, the line will become:
 
 ```
-loadplugin       Mail::SpamAssassin::Plugin::SH /etc/mail/spamassassin/SH.pm
+	loadplugin       Mail::SpamAssassin::Plugin::SH /etc/mail/spamassassin/SH.pm
 ```
 
 Finally, copy the files in Spamassassin's *configuration directory*. Assuming it is `/etc/mail/spamassassin`, you'll need to issue these commands:
@@ -123,7 +123,7 @@ This function checks the reverse DNS (rDNS) of the last untrusted relay in both 
  This function scans the email body and looks for URLs; when one is found the hostname is then resolved and the resulting IP address is checked in SBL and CSS
 
  * `check_sh_bodyuri_ns`
- This function scans the email body and looks for URLs; when one is found it takes the domain's authoritative nameservers IPs and checks them in SBL ( domain and then cheks it's authoritative nameservers IPs in SBL (beta, not used but you are encouraged to try it
+ This function scans the email body and looks for URLs; when one is found it takes the domain's authoritative nameservers IPs and checks them in SBL ( domain and then cheks it's authoritative nameservers IPs in SBL (beta, not used but you are encouraged to try it)
  
 ## Final recommendations
  
