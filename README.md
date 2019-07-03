@@ -26,6 +26,20 @@ It's very easy, just go [here](https://www.spamhaustech.com/dqs/) and complete t
 You naturally need a DQS key along with Spamassassin 3.4.1+ already installed on your system. These instructions do not cover the initial Spamassassin installation. 
 To correctly install Spamassassin please refer to instructions applicable to your distribution.
 
+You will also need to have Perl's `List::MoreUtils ` module installed.
+
+If you have a Debian based distribution, use the following command:
+
+```
+	# apt-get install liblist-moreutils-perl 
+```
+
+If you use an RPM based distribution, install the module by executing:
+
+```
+	# yum install perl-List-MoreUtils 
+```
+
 The scores in this configuration files are weighted for a `required_score` of 4 instead of the default 6. If you use a different `required_score` adjust the values accordingly.
 
 ## Conventions
