@@ -35,10 +35,14 @@ We are going to use some abbreviations and placeholders:
  * SA: SpamAssassin
  * SH: Spamhaus
  * *configuration directory*: whenever you'll find these italic words, we will refer to SA's configuration directory. Depending on your distribution it may be `/etc/spamassassin` or `/etc/mail/spamassassin` or other
- * whenever you find the box below, it means that you need to enter the command on your shell.
+ * whenever you find the box below, it means that you need to enter the command on your shell:
+```
+	$ command
+```
+ * whenever you find the box below, it means that you need to enter the command on a shell with root privileges:
 ```
 	# command
-``` 
+```
 
 ## Installation instructions
 
