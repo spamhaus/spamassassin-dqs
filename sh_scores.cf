@@ -1,4 +1,4 @@
-# Spamhaus's SpamAssassin setup version 20190703
+# Spamhaus's SpamAssassin setup version 20190704
 
 
 score	RCVD_IN_AUTHBL		2

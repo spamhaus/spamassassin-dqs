@@ -18,7 +18,7 @@
 # at <spamassassin at spamteq.com> for questions/suggestions related
 # with this plug-in exclusively.
 
-# version 20190703
+# version 20190704
 
 package Mail::SpamAssassin::Plugin::SH;
 
@@ -29,7 +29,6 @@ use Net::DNS;
 use Mail::SpamAssassin;
 use Mail::SpamAssassin::Plugin;
 use Mail::SpamAssassin::PerMsgStatus;
-use List::MoreUtils qw(uniq);
 use Socket;
 use Mail::SpamAssassin::Logger;
 
@@ -66,6 +65,20 @@ sub new {
   # Finds URIs in the email body and checks their domain's authoritative name servers IPs
   $self->register_eval_rule ( 'check_sh_bodyuri_ns' );
 
+  # Taken from https://github.com/smfreegard/HashBL/blob/master/HashBL.pm
+  $self->{email_regex} = qr/
+    (?=.{0,64}\@)				# limit userpart to 64 chars (and speed up searching?)
+    (?<![a-z0-9!#\$%&'*+\/=?^_`{|}~-])	# start boundary
+    (						# capture email
+    [a-z0-9!#\$%&'*+\/=?^_`{|}~-]+		# no dot in beginning
+    (?:\.[a-z0-9!#\$%&'*+\/=?^_`{|}~-]+)*	# no consecutive dots, no ending dot
+    \@
+    (?:[a-z0-9](?:[a-z0-9-]{0,59}[a-z0-9])?\.){1,4} # max 4x61 char parts (should be enough?)
+    $self->{main}->{registryboundaries}->{valid_tlds_re}	# ends with valid tld
+    )
+    (?!(?:[a-z0-9-]|\.[a-z0-9]))		# make sure domain ends here
+  /xi;
+
   return $self;
 }
 
@@ -90,64 +103,78 @@ sub set_config {
 
 }
 
-sub _get_domains_from_body_emails {
-  my ($self,$pms,$bodyref) = @_;
-  my $body = join('', @{$bodyref});
-  my @address_list;
-  my @domains;
-  foreach my $this_address (uniq( $body =~ /\b([\w\d\_\-\+\.]+\@(?:[\w\d\-]+\.)+[\w\d\-]{2,10})\b/g )) { push @address_list, lc $this_address; }
-  @address_list = uniq(@address_list);
-  foreach my $this_address (@address_list) {
-    my ($this_user, $this_domain )       = split('@', $this_address);
-    $this_domain = $self->{'main'}->{'registryboundaries'}->uri_to_domain($this_domain);
-    dbg("SHPlugin: (_get_domains_from_body_emails) found domain ".$this_domain." in email ".$this_address." found in body");
-    push @domains, $this_domain
+sub _get_body_uris {
+  my ($self,$pms, $bodyref) = @_;
+  my $body = join('', @{$bodyref});    
+  my %seen;
+  my @uris;
+  foreach my $this_uri ( $body =~ /[a-zA-Z][a-zA-Z0-9+\-.]*:\/\/(?:[a-zA-Z0-9\-._~%!$&'()*+,;=]+@)?([a-zA-Z0-9\-._~%]+|↵\[[a-zA-Z0-9\-._~%!$&'()*+,;=:]+\])/g) { 
+    push (@uris, lc $this_uri) unless defined $seen{lc $this_uri};
+    $seen{lc $this_uri} = 1;
   }
-  @domains = uniq(@domains);
-  return (@domains);
+  foreach my $this_uri (@uris) {
+    dbg("SHPlugin: (_get_body_uris) found  ".$this_uri." in body");
+  }
+
+  return (@uris);
+}
+
+sub _get_domains_from_body_emails {
+  my ($self,$pms) = @_;
+  # This extraction code has been heavily copypasted and slightly adapted from https://github.com/smfreegard/HashBL/blob/master/HashBL.pm
+  my %seen;
+  my @body_domains;
+  # get all <a href="mailto:", since they don't show up on stripped_body
+  my $parsed = $pms->get_uri_detail_list();
+  while (my($uri, $info) = each %{$parsed}) {
+    if (defined $info->{types}->{a} and not defined $info->{types}->{parsed}) {
+      if ($uri =~ /^(?:(?i)mailto):$self->{email_regex}/) {
+        my $email = lc($1);
+        my ($this_user, $this_domain )       = split('@', $email);
+        push(@body_domains, $this_domain) unless defined $seen{$this_domain};
+        $seen{$this_domain} = 1;
+        last if scalar @body_domains >= 20; # sanity
+      }
+    }
+  }
+  # scan stripped normalized body
+  # have to do this way since get_uri_detail_list doesn't know what mails are inside <>
+  my $body = $pms->get_decoded_stripped_body_text_array();
+  BODY: foreach (@$body) {
+    # strip urls with possible emails inside
+    s#<?https?://\S{0,255}(?:\@|%40)\S{0,255}# #gi;
+    # strip emails contained in <>, not mailto:
+    # also strip ones followed by quote-like "wrote:" (but not fax: and tel: etc)
+    s#<?(?<!mailto:)$self->{email_regex}(?:>|\s{1,10}(?!(?:fa(?:x|csi)|tel|phone|e?-?mail))[a-z]{2,11}:)# #gi;
+    while (/$self->{email_regex}/g) {
+      my $email = lc($1);
+      my ($this_user, $this_domain )       = split('@', $email);
+      push(@body_domains, $this_domain) unless defined $seen{$this_domain};
+      $seen{$this_domain} = 1;
+      last BODY if scalar @body_domains >= 40; # sanity
+    }
+  }
+  foreach my $this_domain (@body_domains) {
+    dbg("SHPlugin: (_get_domains_from_body_emails) found domain ".$this_domain." in body email");
+  }
+  return (@body_domains);
 }
 
 sub _get_headers_domains {
   my ($self,$pms) = @_;
-  my @domains;
-  if (defined($pms->get( 'From:addr' ))) {
-    my $this_domain = $self->{'main'}->{'registryboundaries'}->uri_to_domain($pms->get( 'From:addr' ));
-    if ($this_domain) {
-      dbg("SHPlugin: (_get_headers_domains) found domain ".$this_domain." in From:addr");
-      push @domains, $this_domain;
+  # This extraction code has been heavily copypasted and slightly adapted from https://github.com/smfreegard/HashBL/blob/master/HashBL.pm
+  my %seen;
+  my @headers_domains;
+  my @headers = ('EnvelopeFrom', 'Sender', 'From', 'Reply-To');
+  foreach my $header (@headers) {
+    if ($pms->get($header . ':addr')) {
+      my $this_domain = $self->{'main'}->{'registryboundaries'}->uri_to_domain($pms->get( $header.':addr' ));
+      dbg("SHPlugin: (_get_headers_domains) found domain ".$this_domain." in header ".$header);
+      push(@headers_domains, $this_domain) unless defined $seen{$this_domain};
+      $seen{$this_domain} = 1;
     }
   }
-  if (defined($pms->get( 'Reply-To:addr' ))) {
-    my $this_domain = $self->{'main'}->{'registryboundaries'}->uri_to_domain($pms->get( 'Reply-To:addr' ));
-    if ($this_domain) {
-      dbg("SHPlugin: (_get_headers_domains) found domain ".$this_domain." in Reply-To:addr");
-      push @domains, $this_domain;
-    }
-  }
-  if (defined($pms->get( 'Sender:addr' ))) {
-    my $this_domain = $self->{'main'}->{'registryboundaries'}->uri_to_domain($pms->get( 'Sender:addr' ));
-    if ($this_domain) {
-      dbg("SHPlugin: (_get_headers_domains) found domain ".$this_domain." in Sender:addr");
-      push @domains, $this_domain;
-    }
-  }
-  if (defined($pms->get( 'EnvelopeFrom:addr' ))) {
-    my $this_domain = $self->{'main'}->{'registryboundaries'}->uri_to_domain($pms->get( 'EnvelopeFrom:addr' ));
-    if ($this_domain) {
-      dbg("SHPlugin: (_get_headers_domains) found domain ".$this_domain." in EnvelopeFrom:addr");
-      push @domains, $this_domain;
-    }
-  }
-  if (defined($pms->get( 'Return-Path:addr' ))) {
-    my $this_domain = $self->{'main'}->{'registryboundaries'}->uri_to_domain($pms->get( 'Return-Path:addr' ));
-    if ($this_domain) {
-      dbg("SHPlugin: (_get_headers_domains) found domain ".$this_domain." in Return-Path:addr");
-      push @domains, $this_domain;
-    }
-  }
-  @domains = uniq(@domains);
-  @domains = grep /\S/, @domains;
-  return (@domains);
+  return (@headers_domains);
 }
 
 sub check_sh_headers {
@@ -286,7 +313,7 @@ sub check_sh_bodyemail_ns {
   my $skip_domains = $conf->{uridnsbl_skip_domains};
   $skip_domains = {}  if !$skip_domains;
   my $rulename = $pms->get_current_eval_rule_name();
-  my (@domains) = _get_domains_from_body_emails($self,$pms,$bodyref);
+  my (@domains) = _get_domains_from_body_emails($self,$pms);
   foreach my $this_domain (@domains) {
     if (!($skip_domains->{$this_domain})) {
       dbg("SHPlugin: (check_sh_bodyemail_ns) checking authoritative NS for domain ".$this_domain);
@@ -333,7 +360,7 @@ sub check_sh_bodyemail {
   my $skip_domains = $conf->{uridnsbl_skip_domains};
   $skip_domains = {}  if !$skip_domains;
   my $rulename = $pms->get_current_eval_rule_name();
-  my (@domains) = _get_domains_from_body_emails($self,$pms,$bodyref);
+  my (@domains) = _get_domains_from_body_emails($self,$pms);
   foreach my $this_domain (@domains) {
     if (!($skip_domains->{$this_domain})) {
       dbg("SHPlugin: (check_sh_bodyemail) checking body domain ".$this_domain);
@@ -367,9 +394,10 @@ sub check_sh_bodyuri_a {
 
   my $body = join('', @{$bodyref});
   my $rulename = $pms->get_current_eval_rule_name();
+
   my @uris;
-  foreach my $this_hostname (uniq( $body =~ /[a-z][a-z0-9+\-.]*:\/\/(?:[a-z0-9\-._~%!$&'()*+,;=]+@)?([a-z0-9\-._~%]+|↵\[[a-z0-9\-._~%!$&'()*+,;=:]+\])/g)) { push @uris, lc $this_hostname; }
-  @uris = uniq(@uris);
+  (@uris) = _get_body_uris($self,$pms,$bodyref);
+
   foreach my $this_hostname (@uris) { 
     if (!($skip_domains->{$this_hostname})) {
       my @addresses = gethostbyname($this_hostname);
@@ -410,8 +438,7 @@ sub check_sh_bodyuri_ns {
   my $body = join('', @{$bodyref});
   my $rulename = $pms->get_current_eval_rule_name();
   my @uris;
-  foreach my $this_hostname (uniq( $body =~ /[a-z][a-z0-9+\-.]*:\/\/(?:[a-z0-9\-._~%!$&'()*+,;=]+@)?([a-z0-9\-._~%]+|↵\[[a-z0-9\-._~%!$&'()*+,;=:]+\])/g)) { push @uris, lc $this_hostname; }
-  @uris = uniq(@uris);
+  (@uris) = _get_body_uris($self,$pms,$bodyref);
   foreach my $this_hostname (@uris) { 
     my $this_domain = $self->{'main'}->{'registryboundaries'}->uri_to_domain($this_hostname);
     if (!($skip_domains->{$this_hostname})) {

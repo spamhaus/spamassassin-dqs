@@ -26,29 +26,6 @@ It's very easy, just go [here](https://www.spamhaustech.com/dqs/) and complete t
 You naturally need a DQS key along with Spamassassin 3.4.1+ already installed on your system. These instructions do not cover the initial Spamassassin installation. 
 To correctly install Spamassassin please refer to instructions applicable to your distribution.
 
-You will also need to have Perl's `List::MoreUtils ` module installed.
-
-If you have a Debian based distribution, use the following command:
-
-```
-	# apt-get install liblist-moreutils-perl 
-```
-
-If you use an RPM based distribution, install the module by executing:
-
-```
-	# yum install perl-List-MoreUtils 
-```
-
-If you use FreeBSD try:
-
-```
-	# portmaster lang/p5-List-MoreUtils 
-```
-or
-```
-	# pkg install p5-List-MoreUtils 
-```
 The scores in this configuration files are weighted for a `required_score` of 4 instead of the default 6. If you use a different `required_score` adjust the values accordingly.
 
 ## Conventions
@@ -173,3 +150,9 @@ While the results are reasonably good, the malware/phishing scoring can certainl
 ## Support and feedback
 
 We would be happy to receive some feedback from you. If you notice any problem with this installation, please drop us a note at datafeed-support@spamteq.com and we'll try to do our best to help you.
+
+Remember that we are going to support only the latest version, so please before opening a support request be sure to be running the up to date code
+
+## Acnowledgements
+
+We'd like to thank everyone for their suggestions. This plugin has been written by using other more well-written plugins as examples, especially [HashBL](https://github.com/smfreegard/HashBL/) from where we borrowed a lot of code. 
