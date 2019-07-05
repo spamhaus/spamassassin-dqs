@@ -7,6 +7,7 @@ This repository contains configuration files and a plugin written for Spamassass
 
 ### Table of contents
 - [What is DQS](#what-is-dqs)?
+- [What are the advantages of DQS](#what-are-the-advantages-of-dqs)?
 - [How does DQS Performs](#how-does-dqs-performs)?
 - [What is the licensing for DQS](#what-is-the-licensing-for-dqs)?
 - [How do I register a DQS key](#how-do-i-register-a-dqs-key)?
@@ -25,6 +26,19 @@ This repository contains configuration files and a plugin written for Spamassass
 #### What is DQS
 
 DQS is a set of DNSBLs with real time updates.
+
+***
+
+#### What are the advantages of DQS
+
+There are some. First of all you will get real time updates instead of one minute delayed updates that you get querying the public mirrors or getting an RSYNC feed.
+Sixty seconds doesn't seem too much but when dealing with hailstormers they are *crucial*. The increase in catch rate between public mirrors and DQS is mostly thanks to the real time updates.
+
+Along with the above advantage you will also get two new zones to query, ZRD (Zero Reputation Domains) and AuthBL.
+
+ZRD automatically adds newly-registered and previously dormant domains to a block list for 24 hours. It also gives you return codes that indicate the age of the domain in hours since first observation.
+
+AuthBL is mostly dedicated to anyone that operates a submission smtp server. It's a list of IPs that are known to host bots that use stolen credentials to spam. If one of your customer gets his credentials stolen, AuthBL greatly mitigates the problem of botnets to abuse the account, and keeps your MTAs safe from being blacklisted.
 
 ***
 
