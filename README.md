@@ -1,6 +1,9 @@
+
 # Use DQS with Spamassassin
 
 This repository contains configuration files and a plugin written for Spamassassin (https://spamassassin.apache.org/) that enables you to use Spamhaus Technology Data Query Service (DQS) product
+
+***
 
 ### Table of contents
 - [What is DQS](#what-is-dqs)?
@@ -16,22 +19,33 @@ This repository contains configuration files and a plugin written for Spamassass
 - [Final recommendations](#final-recommendations)
 - [Support and feedback](#support-and-feedback)
 - [Acnowledgements](#acnowledgements)
+
+***
+
 #### What is DQS
 
 DQS is a set of DNSBLs with real time updates.
+
+***
 
 #### How does DQS performs
 
 You can [see it by yourself](https://www.virusbulletin.com/testing/results/latest/vbspam-email-security). We are independently tested by Virus Bulletin, that tests both DQS and public mirror performances. The difference is that DQS catches up to 42% more spam than our public mirrors.
 And please be aware that that results on VBSpam are achieved by using *only* the DQS dataset, meaning that if you just add an antivirus to your email filtering setup you can possibly reach the same performance as other commercial antispam products.
 
+***
+
 #### What is the licensing for DQS?
 
 The usage terms are [the same](https://www.spamhaus.org/organization/dnsblusage/) as the ones for our public mirrors, meaning that if you already use our public mirrors you are entitled for a free DQS key.
 
+***
+
 #### How do I register a DQS key?
 
 It's very easy, just go [here](https://www.spamhaustech.com/dqs/) and complete the registration procedure. After you register an account, go to [this](https://portal.spamhaustech.com/src/manual/dqs/) page and note the DQS key.
+
+***
 
 #### Prerequisites
 
@@ -39,6 +53,8 @@ You naturally need a DQS key along with Spamassassin 3.4.1+ already installed on
 To correctly install Spamassassin please refer to instructions applicable to your distribution.
 
 The scores in this configuration files are weighted for a `required_score` of 4 instead of the default 6. If you use a different `required_score` adjust the values accordingly.
+
+***
 
 #### Conventions
 
@@ -125,6 +141,8 @@ Now test the setup by running:
 	
 This command checks the whole SA installation; if you don't see any output then congratulations! You successfully installed SH's SA setup. You only need to restart Spamassassin to have the plugin loaded.
 
+***
+
 #### Install from FreeBSD ports
 
 [lrosenman](https://github.com/lrosenman) is mantaining a FreeBSD port of our plugin. We don't give support for this port, but if you want to use it the instructions are as follows:
@@ -140,6 +158,8 @@ Or, if using ports:
 	$ cd /usr/ports/mail/spamassassin-dqs
 	$ sudo make install
 ```
+
+***
 
 ## Plugin internals
 
@@ -165,6 +185,8 @@ This function checks the reverse DNS (rDNS) of the last untrusted relay in both 
 
  * `check_sh_bodyuri_ns`
  This function scans the email body and looks for URLs; when one is found it takes the domain's authoritative nameservers IPs and checks them in SBL (beta, not used but you are encouraged to try it)
+ 
+ ***
  
 ## Final recommendations
  
