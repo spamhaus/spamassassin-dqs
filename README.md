@@ -58,7 +58,7 @@ We are going to use some abbreviations and placeholders:
 
 ## Installation instructions
 
-####Install from Github
+#### Install from Github
 
 Start with downloading the latest package:
 
