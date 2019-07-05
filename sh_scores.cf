@@ -1,4 +1,4 @@
-# Spamhaus's SpamAssassin setup version 20190704
+# Spamhaus's SpamAssassin setup version 20190705
 
 
 score	RCVD_IN_AUTHBL		2
@@ -28,7 +28,6 @@ score	URIBL_CSS		0.1
 score	URIBL_CSS_A		0.1
 score	URIBL_SBL_A		0.1
 score	URIBL_ZRD		3
-score	URIBL_DBL_OR_ZRD	-3
 
 score	SH_DBL_BODY		5
 score	SH_ZRD_BODY		3
@@ -40,10 +39,6 @@ score	SH_REVERSE_ZRD_VERY_FRESH	5
 score	SH_REVERSE_ZRD_FRESH		3
 score	SH_REVERSE_DBL		5
 score	SH_REVERSE_DBL_ABUSED	3
-score   SH_DBL_OR_ZRD_HEADERS	-3
-score   SH_DBL_OR_ZRD_BODY	-3
-score	SH_DBL_OR_ZRD_HELO	-3
-score	SH_DBL_OR_ZRD_REVERSE	-3
 
 score	SH_HELO_ZRD_VERY_FRESH	5
 score	SH_HELO_ZRD_FRESH	3

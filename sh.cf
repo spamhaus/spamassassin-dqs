@@ -1,4 +1,4 @@
-# Spamhaus's SpamAssassin setup version 20190704
+# Spamhaus's SpamAssassin setup version 20190705
 
 
 
@@ -139,14 +139,3 @@ describe	SH_REVERSE_ZRD_VERY_FRESH	The RDNS of last untrusted relay's IP is list
 header		SH_REVERSE_ZRD_FRESH	eval:check_sh_reverse('your_DQS_key.zrd.dq.spamhaus.net', '^127\.0\.2\.([5-9]|1[0-9]|2[0-4])$')
 priority	SH_REVERSE_ZRD_FRESH	-100
 describe	SH_REVERSE_ZRD_FRESH	The RDNS of last untrusted relay's IP is listed in ZRD and the domain age is between 5 and 24 hours
-
-meta		SH_DBL_OR_ZRD_HELO	SH_HELO_DBL && SH_HELO_ZRD
-
-meta		SH_DBL_OR_ZRD_REVERSE	SH_REVERSE_DBL && SH_REVERSE_ZRD
-
-meta		URIBL_DBL_OR_ZRD	URIBL_ZRD && (URIBL_DBL_SPAM || URIBL_DBL_PHISH || URIBL_DBL_MALWARE || URIBL_DBL_BOTNETCC)
-
-meta		SH_DBL_OR_ZRD_HEADERS	SH_DBL_HEADERS && SH_ZRD_HEADERS
-
-meta		SH_DBL_OR_ZRD_BODY	SH_DBL_BODY && SH_ZRD_BODY
-
