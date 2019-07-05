@@ -10,9 +10,8 @@ This repository contains configuration files and a plugin written for Spamassass
 - [Prerequisites](#prerequisites)
 - [Conventions](#conventions)
 - Installation instructions
-
-		- [Install from Github](#install-from-github)
-		- [Install from FreeBSD ports](#install-from-freebsd-ports)
+	- [Install from Github](#install-from-github)
+	- [Install from FreeBSD ports](#install-from-freebsd-ports)
 - [Plugin internals](#plugin-internals)
 - [Final recommendations](#final-recommendations)
 - [Support and feedback](#support-and-feedback)
