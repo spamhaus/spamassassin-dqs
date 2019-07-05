@@ -2,33 +2,45 @@
 
 This repository contains configuration files and a plugin written for Spamassassin (https://spamassassin.apache.org/) that enables you to use Spamhaus Technology Data Query Service (DQS) product
 
-- What is DQS?
+### Table of contents
+- [What is DQS](#what-is-dqs)?
+- [How does DQS Performs](#how-does-dqs-performs)?
+- [What is the licensing for DQS](#what-is-the-licensing-for-dqs)?
+- [How do I register a DQS key](#how-do-i-register-a-dqs-key)?
+- [Prerequisites](#prerequisites)
+- [Conventions](#conventions)
+- Installation instructions
+		- [Install from Github](#install-from-github)
+		- [Install from FreeBSD ports](#install-from-freebsd-ports)
+- [Plugin internals](#plugin-internals)
+- [Final recommendations](#final-recommendations)
+- [Support and feedback](#support-and-feedback)
+- [Acnowledgements](#acnowledgements)
+#### What is DQS
 
 DQS is a set of DNSBLs with real time updates.
 
-- How does DQS performs?
+#### How does DQS performs
 
 You can [see it by yourself](https://www.virusbulletin.com/testing/results/latest/vbspam-email-security). We are independently tested by Virus Bulletin, that tests both DQS and public mirror performances. The difference is that DQS catches up to 42% more spam than our public mirrors.
 And please be aware that that results on VBSpam are achieved by using *only* the DQS dataset, meaning that if you just add an antivirus to your email filtering setup you can possibly reach the same performance as other commercial antispam products.
 
-- What is the licensing for DQS?
+#### What is the licensing for DQS?
 
 The usage terms are [the same](https://www.spamhaus.org/organization/dnsblusage/) as the ones for our public mirrors, meaning that if you already use our public mirrors you are entitled for a free DQS key.
 
-- How do I register a DQS key?
+#### How do I register a DQS key?
 
 It's very easy, just go [here](https://www.spamhaustech.com/dqs/) and complete the registration procedure. After you register an account, go to [this](https://portal.spamhaustech.com/src/manual/dqs/) page and note the DQS key.
 
-# Installation instructions
-
-## Prerequisites
+#### Prerequisites
 
 You naturally need a DQS key along with Spamassassin 3.4.1+ already installed on your system. These instructions do not cover the initial Spamassassin installation. 
 To correctly install Spamassassin please refer to instructions applicable to your distribution.
 
 The scores in this configuration files are weighted for a `required_score` of 4 instead of the default 6. If you use a different `required_score` adjust the values accordingly.
 
-## Conventions
+#### Conventions
 
 We are going to use some abbreviations and placeholders:
 
@@ -46,6 +58,7 @@ We are going to use some abbreviations and placeholders:
 
 ## Installation instructions
 
+####Install from Github
 Start with downloading the latest package:
 
 ```
@@ -111,6 +124,22 @@ Now test the setup by running:
 	
 This command checks the whole SA installation; if you don't see any output then congratulations! You successfully installed SH's SA setup. You only need to restart Spamassassin to have the plugin loaded.
 
+#### Install from FreeBSD ports
+
+[lrosenman](https://github.com/lrosenman) is mantaining a FreeBSD port of our plugin. We don't give support for this port, but if you want to use it the instructions are as follows:
+
+```
+	# pkg install spamassassin-dqs
+```
+and then follow the  instructions.
+
+Or, if using ports:
+
+```
+	$ cd /usr/ports/mail/spamassassin-dqs
+	$ sudo make install
+```
+
 ## Plugin internals
 
 While we undoubtedly recognize Spamassassin's abilities at stopping spam with only minor tweakings to the default config, there are some key uses of our datasets that can be fully taken advantage of only by writing some special SA functions. This is why we decided to develop this special plugin that includes these functions:
@@ -155,7 +184,7 @@ While the results are reasonably good, the malware/phishing scoring can certainl
 
 We would be happy to receive some feedback from you. If you notice any problem with this installation, please drop us a note at datafeed-support@spamteq.com and we'll try to do our best to help you.
 
-Remember that we are going to support only the latest version, so please before opening a support request be sure to be running the up to date code
+Remember that we are going to support only the latest version, so please before opening a support request be sure to be running the up to date code from this github repository.
 
 ## Acnowledgements
 
