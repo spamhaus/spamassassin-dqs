@@ -18,7 +18,7 @@
 # at <spamassassin at spamteq.com> for questions/suggestions related
 # with this plug-in exclusively.
 
-# version 20190704
+# version 20190706
 
 package Mail::SpamAssassin::Plugin::SH;
 
@@ -493,7 +493,7 @@ sub check_sh_reverse {
   my $rdns = $lasthop->{rdns};
   if ($rdns) {
     dbg ("SHPlugin: (check_sh_reverse) checking RDNS of the last untrusted relay (rdns=$rdns)");
-
+    if ((substr $rdns, -1) eq ".") { chop $rdns; }
     my $lookup = $rdns.".".$list;
     my $key = "SH:$lookup";
     my $ent = {
@@ -518,7 +518,6 @@ sub _finish_lookup {
   if (!($subtest)) { $re = qr/^127\./; } else { $re = qr/$subtest/; }
   my @answer = $pkt->answer;
   foreach my $rr (@answer) {
-#    if ($rr->address =~ /^127\./) {
     if ($rr->address =~ /$re/) {
       dbg("SHPlugin: Hit on Item $ent->{addr} for $ent->{rulename}");
       $pms->test_log($ent->{addr});
