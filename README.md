@@ -7,6 +7,7 @@ This repository contains configuration files and a plugin written for Spamassass
 
 ### Table of contents
 - [What is DQS](#what-is-dqs)?
+- [What are the zones available with DQS](#what-are-the-zones-available-with-dqs)?
 - [What are the advantages of DQS](#what-are-the-advantages-of-dqs)?
 - [How does DQS Performs](#how-does-dqs-performs)?
 - [What is the licensing for DQS](#what-is-the-licensing-for-dqs)?
@@ -25,7 +26,13 @@ This repository contains configuration files and a plugin written for Spamassass
 
 #### What is DQS
 
-DQS is a set of DNSBLs with real time updates.
+DQS (acronym for Data Query Service) is a set of DNSBLs with real time updates operated by Spamhaus Technology ([https://www.spamhaustech.com](https://www.spamhaustech.com))
+
+***
+
+#### What are the zones available with DQS
+
+All zones and their meaning with all possible return codes are documented [here](https://docs.spamhaustech.com/10-data-type-documentation/datasets/030-datasets.html)
 
 ***
 
