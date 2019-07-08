@@ -112,6 +112,7 @@ Start with downloading the latest package:
 A subdirectory called `spamassassin-dqs` will be created. Within it you will find the following files:
 
 - `README.md`. This is just a pointer to this document.
+- `sh.pre`. This file is the loader for the plugin
 - `SH.pm`. This is a dedicated SA plugin written by SH that overcomes some of SA's limitations
 - `sh.cf`. This file contains lookup redefinitions and will need to be edited (see below)
 - `sh_scores.cf`. In this file we override some of SA's default rule scoring
@@ -134,10 +135,10 @@ If you are on FreeBSD then the command slightly changes:
 
 There will be no output, but your key will be placed inside `sh.cf` in all the needed places.
 
-Edit `sh.cf` with your editor of choice, and take a look at the first line:
+Edit `sh.pre` with your editor of choice, and take a look at the first line:
 
 ```
-	loadplugin       Mail::SpamAssassin::Plugin::SH <config_directory\>/SH.pm
+	loadplugin       Mail::SpamAssassin::Plugin::SH <config_directory>/SH.pm
 ```
 
 You will need to replace `<config_directory\>` with your actual *configuration directory*. So, for example, if your *configuration directory* is `/etc/mail/spamassassin`, the line will become:
@@ -152,6 +153,7 @@ Finally, copy the files in Spamassassin's *configuration directory*. Assuming it
 	# cp SH.pm /etc/mail/spamassassin
 	# cp sh.cf /etc/mail/spamassassin
 	# cp sh_scores.cf /etc/mail/spamassassin
+	# cp sh.pre /etc/mail/spamassassin
 ```
 
 Now test the setup by running:
