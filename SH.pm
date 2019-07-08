@@ -18,7 +18,7 @@
 # at <spamassassin at spamteq.com> for questions/suggestions related
 # with this plug-in exclusively.
 
-# version 20190706
+# version 20190708
 
 package Mail::SpamAssassin::Plugin::SH;
 
@@ -169,9 +169,11 @@ sub _get_headers_domains {
   foreach my $header (@headers) {
     if ($pms->get($header . ':addr')) {
       my $this_domain = $self->{'main'}->{'registryboundaries'}->uri_to_domain($pms->get( $header.':addr' ));
-      dbg("SHPlugin: (_get_headers_domains) found domain ".$this_domain." in header ".$header);
-      push(@headers_domains, $this_domain) unless defined $seen{$this_domain};
-      $seen{$this_domain} = 1;
+      if ($this_domain) {
+        dbg("SHPlugin: (_get_headers_domains) found domain ".$this_domain." in header ".$header);
+        push(@headers_domains, $this_domain) unless defined $seen{$this_domain};
+        $seen{$this_domain} = 1;
+      }
     }
   }
   return (@headers_domains);
@@ -192,21 +194,23 @@ sub check_sh_headers {
   (@header_domains) = _get_headers_domains($self,$pms);
 
   my $rulename = $pms->get_current_eval_rule_name();
-  foreach my $this_domain (@header_domains) {
-    if (!($skip_domains->{$this_domain})) {
-      my $lookup = $this_domain.".".$list;
-      my $key = "SH:$lookup";
-      my $ent = {
-        key => $key,
-        zone => $list,
-        type => 'SH',
-        rulename => $rulename,
-        addr => $this_domain,
-      };
-      $ent = $pms->{async}->bgsend_and_start_lookup($lookup, 'A', undef, $ent, sub {
-        my ($ent, $pkt) = @_;
-        $self->_finish_lookup($pms, $ent, $pkt, $subtest);
-      }, master_deadline => $pms->{master_deadline});
+  if (@header_domains) {
+    foreach my $this_domain (@header_domains) {
+      if (!($skip_domains->{$this_domain})) {
+        my $lookup = $this_domain.".".$list;
+        my $key = "SH:$lookup";
+        my $ent = {
+          key => $key,
+          zone => $list,
+          type => 'SH',
+          rulename => $rulename,
+          addr => $this_domain,
+        };
+        $ent = $pms->{async}->bgsend_and_start_lookup($lookup, 'A', undef, $ent, sub {
+          my ($ent, $pkt) = @_;
+          $self->_finish_lookup($pms, $ent, $pkt, $subtest);
+        }, master_deadline => $pms->{master_deadline});
+      } 
     }
   }
   return 0;
