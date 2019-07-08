@@ -1,0 +1,7 @@
+loadplugin      Mail::SpamAssassin::Plugin::SH <config_directory>/SH.pm
+
+# In case you already loaded Shortcircuit in v320.pre , you can comment the following line.
+# Leaving it uncommented with the same line in v320.pre uncommented too doesn't cause problems
+
+loadplugin      Mail::SpamAssassin::Plugin::Shortcircuit
+
