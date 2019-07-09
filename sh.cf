@@ -1,27 +1,39 @@
-# Spamhaus's SpamAssassin setup version 20190708
+# Spamhaus's SpamAssassin setup version 20190709
 
 
 ifplugin Mail::SpamAssassin::Plugin::SH
 
-  header	RCVD_IN_AUTHBL	eval:check_rbl('authbl','your_DQS_key.authbl.dq.spamhaus.net.')
-  tflags	RCVD_IN_AUTHBL	net
+  header	__RCVD_IN_AUTHBL	eval:check_rbl('authbl','your_DQS_key.authbl.dq.spamhaus.net.')
+  tflags	__RCVD_IN_AUTHBL	net
+  meta		RCVD_IN_AUTHBL		__RCVD_IN_AUTHBL
+  describe	RCVD_IN_AUTHBL		Received via a relay in Spamhaus AuthBL
 
   header	__RCVD_IN_ZEN	eval:check_rbl('zen','your_DQS_key.zen.dq.spamhaus.net.')
   tflags	__RCVD_IN_ZEN	net
 
-  header	RCVD_IN_ZEN_LASTEXTERNAL		eval:check_rbl('zen-lastexternal', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.([2-9]|10|11)$')
-  tflags	RCVD_IN_ZEN_LASTEXTERNAL		net
-  shortcircuit	RCVD_IN_ZEN_LASTEXTERNAL	spam
+  header	__RCVD_IN_ZEN_LASTEXTERNAL	eval:check_rbl('zen-lastexternal', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.([2-9]|10|11)$')
+  tflags	__RCVD_IN_ZEN_LASTEXTERNAL	net
+  meta		RCVD_IN_ZEN_LASTEXTERNAL	__RCVD_IN_ZEN_LASTEXTERNAL
+  describe	RCVD_IN_ZEN_LASTEXTERNAL	The last untrusted relay is listed in Spamhaus ZEN
 
-  header	RCVD_IN_SBL		eval:check_rbl_sub('zen', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.2$')
-  header	RCVD_IN_SBL_CSS		eval:check_rbl_sub('zen', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.3$')
-  header	RCVD_IN_SBL_DROP	eval:check_rbl_sub('zen', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.9$')
+  ifplugin Mail::SpamAssassin::Plugin::Shortcircuit  
+    shortcircuit	RCVD_IN_ZEN_LASTEXTERNAL	spam
+  endif # Mail::SpamAssassin::Plugin::Shortcircuit
 
-  header	RCVD_IN_XBL		eval:check_rbl('zen', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.[4567]$')
-  tflags	RCVD_IN_XBL		net
+  header	__RCVD_IN_SBL		eval:check_rbl_sub('zen', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.2$')
+  meta		RCVD_IN_SBL		__RCVD_IN_SBL
+  header	__RCVD_IN_SBL_CSS	eval:check_rbl_sub('zen', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.3$')
+  meta		RCVD_IN_SBL_CSS		__RCVD_IN_SBL_CSS
+  header	__RCVD_IN_SBL_DROP	eval:check_rbl_sub('zen', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.9$')
+  meta		RCVD_IN_SBL_DROP	__RCVD_IN_SBL_DROP
 
-  header	RCVD_IN_PBL		eval:check_rbl('zen', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.1[01]$')
+  header	__RCVD_IN_XBL		eval:check_rbl('zen', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.[4567]$')
+  tflags	__RCVD_IN_XBL		net
+  meta		RCVD_IN_XBL		__RCVD_IN_XBL
+
+  header	__RCVD_IN_PBL		eval:check_rbl('zen', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.1[01]$')
   tflags	RCVD_IN_PBL		net
+  meta		RCVD_IN_PBL		__RCVD_IN_PBL
 
   ifplugin Mail::SpamAssassin::Plugin::URIDNSBL
     uridnssub URIBL_SBL             your_DQS_key.zen.dq.spamhaus.net. A 127.0.0.2
@@ -89,51 +101,51 @@ ifplugin Mail::SpamAssassin::Plugin::SH
   priority	SH_ZRD_BODY_FRESH	-100 
   describe	SH_ZRD_BODY_FRESH	The domain of an email address found in body is listed in ZRD and the domain age is between 5 and 24 hours
 
-  header		SH_DBL_HEADERS	eval:check_sh_headers('your_DQS_key.dbl.dq.spamhaus.net', '^127\.0\.1\.[2-6]$')
+  header	SH_DBL_HEADERS	eval:check_sh_headers('your_DQS_key.dbl.dq.spamhaus.net', '^127\.0\.1\.[2-6]$')
   priority	SH_DBL_HEADERS	-100 
   describe	SH_DBL_HEADERS	A domain found in headers (mail from, reply-to etc..) is listed in DBL
 
-  header		SH_DBL_HEADERS_ABUSED	eval:check_sh_headers('your_DQS_key.dbl.dq.spamhaus.net', '^127\.0\.1\.10[2-6]$')
+  header	SH_DBL_HEADERS_ABUSED	eval:check_sh_headers('your_DQS_key.dbl.dq.spamhaus.net', '^127\.0\.1\.10[2-6]$')
   priority	SH_DBL_HEADERS_ABUSED	-100 
   describe	SH_DBL_HEADERS_ABUSED	A domain found in headers (mail from, reply-to etc..) is listed in DBL as an abused domain
 
-  header		SH_ZRD_HEADERS_VERY_FRESH	eval:check_sh_headers('your_DQS_key.zrd.dq.spamhaus.net', '^127\.0\.2\.[2-4]$')
+  header	SH_ZRD_HEADERS_VERY_FRESH	eval:check_sh_headers('your_DQS_key.zrd.dq.spamhaus.net', '^127\.0\.2\.[2-4]$')
   priority	SH_ZRD_HEADERS_VERY_FRESH	-100 
   describe	SH_ZRD_HEADERS_VERY_FRESH	A domain found in headers (mail from, reply-to etc..) is listed in ZRD and the domain age is between 0 and 4 hours
 
-  header		SH_ZRD_HEADERS_FRESH	eval:check_sh_headers('your_DQS_key.zrd.dq.spamhaus.net', '^127\.0\.2\.([5-9]|1[0-9]|2[0-4])$')
+  header	SH_ZRD_HEADERS_FRESH	eval:check_sh_headers('your_DQS_key.zrd.dq.spamhaus.net', '^127\.0\.2\.([5-9]|1[0-9]|2[0-4])$')
   priority	SH_ZRD_HEADERS_FRESH	-100 
   describe	SH_ZRD_HEADERS_FRESH	A domain found in headers (mail from, reply-to etc..) is listed in ZRD and the domain age is between 5 and 24 hours
 
-  header		SH_HELO_DBL	eval:check_sh_helo('your_DQS_key.dbl.dq.spamhaus.net', '^127\.0\.1\.[2-6]$')
+  header	SH_HELO_DBL	eval:check_sh_helo('your_DQS_key.dbl.dq.spamhaus.net', '^127\.0\.1\.[2-6]$')
   priority	SH_HELO_DBL	-100
   describe	SH_HELO_DBL	The domain used in the HELO string is listed in DBL
 
-  header		SH_HELO_DBL_ABUSED	eval:check_sh_helo('your_DQS_key.dbl.dq.spamhaus.net', '^127\.0\.1\.10[2-6]$')
+  header	SH_HELO_DBL_ABUSED	eval:check_sh_helo('your_DQS_key.dbl.dq.spamhaus.net', '^127\.0\.1\.10[2-6]$')
   priority	SH_HELO_DBL_ABUSED	-100
   describe	SH_HELO_DBL_ABUSED	The domain used in the HELO string is listed in DBL as an abused domain
 
-  header		SH_HELO_ZRD_VERY_FRESH	eval:check_sh_helo('your_DQS_key.zrd.dq.spamhaus.net', '^127\.0\.2\.[2-4]$')
+  header	SH_HELO_ZRD_VERY_FRESH	eval:check_sh_helo('your_DQS_key.zrd.dq.spamhaus.net', '^127\.0\.2\.[2-4]$')
   priority	SH_HELO_ZRD_VERY_FRESH	-100
   describe	SH_HELO_ZRD_VERY_FRESH	The domain used in the HELO string is listed in ZRD and the domain age is between 0 and 4 hours
 
-  header		SH_HELO_ZRD_FRESH	eval:check_sh_helo('your_DQS_key.zrd.dq.spamhaus.net', '^127\.0\.2\.([5-9]|1[0-9]|2[0-4])$')
+  header	SH_HELO_ZRD_FRESH	eval:check_sh_helo('your_DQS_key.zrd.dq.spamhaus.net', '^127\.0\.2\.([5-9]|1[0-9]|2[0-4])$')
   priority	SH_HELO_ZRD_FRESH	-100
   describe	SH_HELO_ZRD_FRESH	The domain used in the HELO string is listed in ZRD and the domain age is between 5 and 24 hours
 
-  header		SH_REVERSE_DBL	eval:check_sh_reverse('your_DQS_key.dbl.dq.spamhaus.net', '^127\.0\.1\.[2-6]$')
+  header	SH_REVERSE_DBL	eval:check_sh_reverse('your_DQS_key.dbl.dq.spamhaus.net', '^127\.0\.1\.[2-6]$')
   priority	SH_REVERSE_DBL	-100
   describe	SH_REVERSE_DBL  The RDNS of last untrusted relay's IP is listed in DBL
 
-  header		SH_REVERSE_DBL_ABUSED	eval:check_sh_reverse('your_DQS_key.dbl.dq.spamhaus.net', '^127\.0\.1\.10[2-6]$')
+  header	SH_REVERSE_DBL_ABUSED	eval:check_sh_reverse('your_DQS_key.dbl.dq.spamhaus.net', '^127\.0\.1\.10[2-6]$')
   priority	SH_REVERSE_DBL_ABUSED	-100
   describe	SH_REVERSE_DBL_ABUSED  The RDNS of last untrusted relay's IP is listed in DBL as an abused domain
 
-  header		SH_REVERSE_ZRD_VERY_FRESH	eval:check_sh_reverse('your_DQS_key.zrd.dq.spamhaus.net', '^127\.0\.2\.[2-4]$')
+  header	SH_REVERSE_ZRD_VERY_FRESH	eval:check_sh_reverse('your_DQS_key.zrd.dq.spamhaus.net', '^127\.0\.2\.[2-4]$')
   priority	SH_REVERSE_ZRD_VERY_FRESH	-100
   describe	SH_REVERSE_ZRD_VERY_FRESH	The RDNS of last untrusted relay's IP is listed in ZRD and the domain age is between 0 and 4 hours
 
-  header		SH_REVERSE_ZRD_FRESH	eval:check_sh_reverse('your_DQS_key.zrd.dq.spamhaus.net', '^127\.0\.2\.([5-9]|1[0-9]|2[0-4])$')
+  header	SH_REVERSE_ZRD_FRESH	eval:check_sh_reverse('your_DQS_key.zrd.dq.spamhaus.net', '^127\.0\.2\.([5-9]|1[0-9]|2[0-4])$')
   priority	SH_REVERSE_ZRD_FRESH	-100
   describe	SH_REVERSE_ZRD_FRESH	The RDNS of last untrusted relay's IP is listed in ZRD and the domain age is between 5 and 24 hours
 
