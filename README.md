@@ -1,7 +1,7 @@
 
-# Use DQS with Spamassassin
+# Use DQS with SpamAssassin
 
-This repository contains configuration files and a plugin written for Spamassassin (https://spamassassin.apache.org/) that enables you to use Spamhaus Technology Data Query Service (DQS) product
+This repository contains configuration files and a plugin written for SpamAssassin (https://spamassassin.apache.org/) that enables you to use Spamhaus Technology Data Query Service (DQS) product
 
 ***
 
@@ -70,8 +70,8 @@ It's very easy, just go [here](https://www.spamhaustech.com/dqs/) and complete t
 
 #### Prerequisites
 
-You naturally need a DQS key along with Spamassassin 3.4.1+ already installed on your system. These instructions do not cover the initial Spamassassin installation. 
-To correctly install Spamassassin please refer to instructions applicable to your distribution.
+You naturally need a DQS key along with SpamAssassin 3.4.1+ already installed on your system. These instructions do not cover the initial SpamAssassin installation. 
+To correctly install SpamAssassin please refer to instructions applicable to your distribution.
 
 The scores in this configuration files are weighted for a `required_score` of 4 instead of the default 6. If you use a different `required_score` adjust the values accordingly.
 
@@ -147,7 +147,7 @@ You will need to replace `<config_directory\>` with your actual *configuration d
 	loadplugin       Mail::SpamAssassin::Plugin::SH /etc/mail/spamassassin/SH.pm
 ```
 
-Finally, copy the files in Spamassassin's *configuration directory*. Assuming it is `/etc/mail/spamassassin`, you'll need to issue these commands:
+Finally, copy the files in SpamAssassin's *configuration directory*. Assuming it is `/etc/mail/spamassassin`, you'll need to issue these commands:
 
 ```
 	# cp SH.pm /etc/mail/spamassassin
@@ -162,7 +162,7 @@ Now test the setup by running:
 	# spamassassin --lint
 ```
 	
-This command checks the whole SA installation; if you don't see any output then congratulations! You successfully installed SH's SA setup. You only need to restart Spamassassin to have the plugin loaded.
+This command checks the whole SA installation; if you don't see any output then congratulations! You successfully installed SH's SA setup. You only need to restart SpamAssassin to have the plugin loaded.
 
 ***
 
@@ -186,7 +186,7 @@ Or, if using ports:
 
 ## Plugin internals
 
-While we undoubtedly recognize Spamassassin's abilities at stopping spam with only minor tweakings to the default config, there are some key uses of our datasets that can be fully taken advantage of only by writing some special SA functions. This is why we decided to develop this special plugin that includes these functions:
+While we undoubtedly recognize SpamAssassin's abilities at stopping spam with only minor tweakings to the default config, there are some key uses of our datasets that can be fully taken advantage of only by writing some special SA functions. This is why we decided to develop this special plugin that includes these functions:
 
  * `check_sh_helo`.
 This function checks the domain used in the HELO/EHLO string against DBL and ZRD.
@@ -198,7 +198,7 @@ This function takes the domain out of the *From* , *Reply-to* , *Envelope From*,
 This function scans the email body looking for email addresses. For all email addresses found, it extracts the domain and check it against DBL and ZRD. This approach has been proven useful, for example, in some dating scams campaign.
 
  * `check_sh_bodyemail_ns`.
-This function scans the email body looking for email addresses. For all email addresses found, it extracts the domain and then cheks it's authoritative nameservers IPs in SBL (beta, not used but you are encouraged to try it)
+This function scans the email body looking for email addresses. For all email addresses found, it extracts the domain and then checks its authoritative nameservers IPs in SBL (beta, not used but you are encouraged to try it)
 
  * `check_sh_reverse`
 This function checks the reverse DNS (rDNS) of the last untrusted relay in both DBL and ZRD
@@ -232,6 +232,6 @@ We would be happy to receive some feedback from you. If you notice any problem w
 
 Remember that we are going to support only the latest version, so please before opening a support request be sure to be running the up to date code from this github repository.
 
-## Acnowledgements
+## Acknowledgements
 
 We'd like to thank everyone for their suggestions. This plugin has been written by using other more well-written plugins as examples, especially [HashBL](https://github.com/smfreegard/HashBL/) from where we borrowed a lot of code. 
