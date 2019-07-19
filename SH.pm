@@ -18,7 +18,7 @@
 # at <spamassassin at spamteq.com> for questions/suggestions related
 # with this plug-in exclusively.
 
-# version 20190708
+# version 20190719
 
 package Mail::SpamAssassin::Plugin::SH;
 
@@ -65,21 +65,38 @@ sub new {
   # Finds URIs in the email body and checks their domain's authoritative name servers IPs
   $self->register_eval_rule ( 'check_sh_bodyuri_ns' );
 
-  # Taken from https://github.com/smfreegard/HashBL/blob/master/HashBL.pm
+  return $self;
+}
+
+sub finish_parsing_end {
+  my ($self, $opts) = @_;
+
+  return 0 if !$self->{sh_available};
+
+  # valid_tlds_re will be available at finish_parsing_end, compile it now,
+  # we only need to do it once and before possible forking
+  if (!exists $self->{email_regex}) {
+    $self->_init_email_re();
+  }
+  return 0;
+}
+
+sub _init_email_re {
+  my ($self) = @_;
+
+  # Some regexp tips courtesy of http://www.regular-expressions.info/email.html
+  # full email regex v0.02
   $self->{email_regex} = qr/
-    (?=.{0,64}\@)				# limit userpart to 64 chars (and speed up searching?)
-    (?<![a-z0-9!#\$%&'*+\/=?^_`{|}~-])	# start boundary
-    (						# capture email
-    [a-z0-9!#\$%&'*+\/=?^_`{|}~-]+		# no dot in beginning
-    (?:\.[a-z0-9!#\$%&'*+\/=?^_`{|}~-]+)*	# no consecutive dots, no ending dot
+    (?=.{0,64}\@)                       # limit userpart to 64 chars (and speed up searching?)
+    (?<![a-z0-9!#\$%&'*+\/=?^_`{|}~-])  # start boundary
+    (                                   # capture email
+    [a-z0-9!#\$%&'*+\/=?^_`{|}~-]+      # no dot in beginning
+    (?:\.[a-z0-9!#\$%&'*+\/=?^_`{|}~-]+)* # no consecutive dots, no ending dot
     \@
     (?:[a-z0-9](?:[a-z0-9-]{0,59}[a-z0-9])?\.){1,4} # max 4x61 char parts (should be enough?)
-    $self->{main}->{registryboundaries}->{valid_tlds_re}	# ends with valid tld
+    $self->{main}->{registryboundaries}->{valid_tlds_re} # ends with valid tld
     )
-    (?!(?:[a-z0-9-]|\.[a-z0-9]))		# make sure domain ends here
   /xi;
-
-  return $self;
 }
 
 sub set_config {
