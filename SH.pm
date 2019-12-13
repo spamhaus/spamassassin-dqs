@@ -258,26 +258,9 @@ sub check_sh_headers_ns {
       my $reply_ns = $res->query("$this_domain", "NS");
       if ($reply_ns) {
         foreach my $rr_ns (grep { $_->type eq "NS" } $reply_ns->answer) {
-          my @addresses = gethostbyname($rr_ns->nsdname);
-          @addresses = map { inet_ntoa($_) } @addresses[4 .. $#addresses];
-          foreach my $address (@addresses) {
-            dbg("SHPlugin: (check_sh_headers_ns) found authoritative NS for domain ".$this_domain.": ".$rr_ns->nsdname."->".$address);
-            my $result = join ".", reverse split /[.]/, $address;
-            my $lookup = $result.".".$list;
-            my $key = "SH:$lookup";
-            my $ent = {
-              key => $key,
-              zone => $list,
-              type => 'SH',
-              rulename => $rulename,
-              addr => $result,
-            };
-            $ent = $pms->{async}->bgsend_and_start_lookup($lookup, 'A', undef, $ent, sub {
-             my ($ent, $pkt) = @_;
-             $self->_finish_lookup($pms, $ent, $pkt, $subtest);
-            }, master_deadline => $pms->{master_deadline});
-         } 
-       } 
+          dbg("SHPlugin: (check_sh_headers_ns) found authoritative NS for %s: %s", $this_domain, $rr_ns->nsdname);
+          $self->lookup_a_record($pms, $rr_ns->nsdname, $list, $rulename, $subtest);
+        }
       }
     }     
   }
@@ -344,26 +327,9 @@ sub check_sh_bodyemail_ns {
       my $reply_ns = $res->query("$this_domain", "NS");
       if ($reply_ns) {
         foreach my $rr_ns (grep { $_->type eq "NS" } $reply_ns->answer) {
-          my @addresses = gethostbyname($rr_ns->nsdname);
-          @addresses = map { inet_ntoa($_) } @addresses[4 .. $#addresses];
-          foreach my $address (@addresses) {
-            dbg("SHPlugin: (check_sh_bodyemail_ns) found authoritative NS for domain ".$this_domain.": ".$rr_ns->nsdname."->".$address);
-            my $result = join ".", reverse split /[.]/, $address;
-            my $lookup = $result.".".$list;
-            my $key = "SH:$lookup";
-            my $ent = {
-              key => $key,
-              zone => $list,
-              type => 'SH',
-              rulename => $rulename,
-              addr => $result,
-            };
-            $ent = $pms->{async}->bgsend_and_start_lookup($lookup, 'A', undef, $ent, sub {
-             my ($ent, $pkt) = @_;
-             $self->_finish_lookup($pms, $ent, $pkt, $subtest);
-            }, master_deadline => $pms->{master_deadline});
-         }
-       }
+          dbg("SHPlugin: (check_sh_bodyemail_ns) found authoritative NS for %s: %s", $this_domain, $rr_ns->nsdname);
+          $self->lookup_a_record($pms, $rr_ns->nsdname, $list, $rulename, $subtest);
+        }
       } 
     }
   }
@@ -421,26 +387,8 @@ sub check_sh_bodyuri_a {
 
   foreach my $this_hostname (@uris) { 
     if (!($skip_domains->{$this_hostname})) {
-      my @addresses = gethostbyname($this_hostname);
-      @addresses = map { inet_ntoa($_) } @addresses[4 .. $#addresses];
-      foreach my $address (@addresses) { 
-        my $result = join ".", reverse split /[.]/, $address;
-        dbg("SHPlugin: (check_sh_bodyuri_a) Found A record for URI ".$this_hostname.": ".$address);
-        my $lookup = $result.".".$list;
-        my $key = "SH:$lookup";
-        my $ent = {
-          key => $key,
-          zone => $list,
-          type => 'SH',
-          rulename => $rulename,
-          addr => $result,
-        };
-          $ent = $pms->{async}->bgsend_and_start_lookup($lookup, 'A', undef, $ent, sub {
-            my ($ent, $pkt) = @_;
-            $self->_finish_lookup($pms, $ent, $pkt, $subtest);
-        }, master_deadline => $pms->{master_deadline});
-          #   return (check_rbl($result, $list, $subtest));
-      }
+      dbg("SHPlugin: (check_sh_bodyuri_a) lookup_a_record for URI ".$this_hostname);
+      $self->lookup_a_record($pms, $this_hostname, $list, $rulename, $subtest);
     } 
   }
   return 0;
@@ -470,25 +418,8 @@ sub check_sh_bodyuri_ns {
       my $reply_ns = $res->query("$this_domain", "NS");
       if ($reply_ns) {
         foreach my $rr_ns (grep { $_->type eq "NS" } $reply_ns->answer) {
-          my @addresses = gethostbyname($rr_ns->nsdname);
-          @addresses = map { inet_ntoa($_) } @addresses[4 .. $#addresses];
-          foreach my $address (@addresses) {
-            dbg("SHPlugin: (check_sh_bodyuri_ns) found authoritative NS for domain ".$this_domain.": ".$rr_ns->nsdname."->".$address);
-            my $result = join ".", reverse split /[.]/, $address;
-            my $lookup = $result.".".$list;
-            my $key = "SH:$lookup";
-            my $ent = {
-              key => $key,
-              zone => $list,
-              type => 'SH',
-              rulename => $rulename,
-              addr => $result,
-            };
-            $ent = $pms->{async}->bgsend_and_start_lookup($lookup, 'A', undef, $ent, sub {
-             my ($ent, $pkt) = @_;
-             $self->_finish_lookup($pms, $ent, $pkt, $subtest);
-            }, master_deadline => $pms->{master_deadline});
-          }
+          dbg("SHPlugin: (check_sh_bodyuri_ns) found authoritative NS for %s: %s", $this_domain, $rr_ns->nsdname);
+          $self->lookup_a_record($pms, $rr_ns->nsdname, $list, $rulename, $subtest);
         }
       }
     } 
@@ -536,6 +467,7 @@ sub _finish_lookup {
   my ($self, $pms, $ent, $pkt,$subtest) = @_;
   my $re;
   return if !$pkt;
+  dbg("SHPlugin: _finish_lookup on $ent->{addr} / $ent->{rulename} / $subtest");
   if (!($subtest)) { $re = qr/^127\./; } else { $re = qr/$subtest/; }
   my @answer = $pkt->answer;
   foreach my $rr (@answer) {
@@ -546,6 +478,62 @@ sub _finish_lookup {
       return;
     }
   }
+}
+
+# ---------------------------------------------------------------------------
+
+sub lookup_a_record {
+	my ($self, $pms, $hname, $list, $rulename, $subtest) = @_;
+	
+	my $key = "A:" . $hname;
+	my $ent = {
+		key => $key,
+		zone => $list,
+		type => "SH",
+	};
+	$pms->{async}->bgsend_and_start_lookup(
+		$hname, 'A', undef, $ent,
+		sub {
+			my ($ent2,$pkt) = @_;
+			$self->continue_a_record_lookup($pms, $ent2, $pkt, $hname, $rulename, $subtest)
+			}, master_deadline => $pms->{master_deadline} );
+}
+
+sub continue_a_record_lookup
+{
+	my ($self, $pms, $ent, $pkt, $hname, $rulename, $subtest) = @_;
+	
+	if (!$pkt)
+	{
+		# $pkt will be undef if the DNS query was aborted (e.g. timed out)
+		dbg("SHPlugin: continue_a_record_lookup aborted %s", $hname);
+		return;
+	}
+	dbg("SHPlugin: continue_a_record_lookup reached for %s", $hname);
+	
+	my @answer = $pkt->answer;
+	foreach my $rr (@answer)
+	{
+		if ($rr->type eq 'A')
+		{
+			my $ip_address = $rr->rdatastr;
+			dbg("SHPlugin: continue_a_record_lookup found A record for URI ".$hname.": ".$ip_address);
+			my $reversed = join ".", reverse split /[.]/, $ip_address;
+			my $lookup = $reversed.".".$ent->{zone};
+			my $key = "SH:$lookup";
+			my $ent2 = {
+				key => $key,
+				zone => $ent->{zone},
+				type => 'SH',
+				addr => $reversed,
+				rulename => $rulename,
+				};
+			$ent = $pms->{async}->bgsend_and_start_lookup($lookup, 'A', undef, $ent2, sub {
+				my ($ent3, $pkt) = @_;
+				$self->_finish_lookup($pms, $ent3, $pkt, $subtest);
+				}, master_deadline => $pms->{master_deadline});
+		}
+	}
 }
 
 1;
