@@ -13,6 +13,7 @@ ifplugin Mail::SpamAssassin::Plugin::SH
 
   header	__RCVD_IN_ZEN_LASTEXTERNAL	eval:check_rbl('zen-lastexternal', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.([2-9]|10|11)$')
   tflags	__RCVD_IN_ZEN_LASTEXTERNAL	net
+  priority      __RCVD_IN_ZEN_LASTEXTERNAL      -200
   meta		RCVD_IN_ZEN_LASTEXTERNAL	__RCVD_IN_ZEN_LASTEXTERNAL
   describe	RCVD_IN_ZEN_LASTEXTERNAL	The last untrusted relay is listed in Spamhaus ZEN
 
