@@ -1,0 +1,35 @@
+# Spamhaus's SpamAssassin setup version 20200430
+
+
+ifplugin Mail::SpamAssassin::Plugin::SH
+
+  body          SH_HBL_FILE_MALWARE      eval:check_sh_attachment('_file.your_DQS_key.hbl.dq.spamhaus.net.', '^127\.0\.3\.10')
+  describe      SH_HBL_FILE_MALWARE      An attachment's hash is known malware
+
+  body          SH_HBL_FILE_SUSPICIOUS      eval:check_sh_attachment('_file.your_DQS_key.hbl.dq.spamhaus.net.', '^127\.0\.3\.15')
+  describe      SH_HBL_FILE_SUSPICIOUS      An attachment's hash is suspected to be malware
+
+  body          SH_HBL_CW_BTC     eval:check_sh_crypto('_cw.your_DQS_key.hbl.dq.spamhaus.net.', '^127\.0\.3\.20', '\b(?:bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}\b', 'BTC')
+  describe      SH_HBL_CW_BTC     Malicious BTC address
+
+  body          SH_HBL_CW_ETH     eval:check_sh_crypto('_cw.your_DQS_key.hbl.dq.spamhaus.net.', '^127\.0\.3\.20', '\b(?<!=)0x[a-fA-F0-9]{40}\b', 'ETH')
+  describe      SH_HBL_CW_ETH     Malicious ETH address
+
+  body          SH_HBL_CW_BCH     eval:check_sh_crypto('_cw.your_DQS_key.hbl.dq.spamhaus.net.', '^127\.0\.3\.20', '\b(?<!=)bitcoincash:(?:q|p)[a-z0-9]{41}\b', 'BCH')
+  describe      SH_HBL_CW_BCH     Malicious BCH address
+
+  body          SH_HBL_CW_XMR     eval:check_sh_crypto('_cw.your_DQS_key.hbl.dq.spamhaus.net.', '^127\.0\.3\.20', '\b(?<!=)4(?:[0-9]|[A-B])(?:.){93}\b', 'XMR')
+  describe      SH_HBL_CW_XMR     Malicious XMR address
+
+  body          SH_HBL_CW_LTC     eval:check_sh_crypto('_cw.your_DQS_key.hbl.dq.spamhaus.net.', '^127\.0\.3\.20', '\b(?<!=)[LM3][a-km-zA-HJ-NP-Z1-9]{26,33}\b', 'LTC')
+  describe      SH_HBL_CW_LTC     Malicious LTC address
+
+  body          SH_HBL_CW_XRP     eval:check_sh_crypto('_cw.your_DQS_key.hbl.dq.spamhaus.net.', '^127\.0\.3\.20', '\b(r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35})\b', 'XRP')
+  describe      SH_HBL_CW_XRP     Malicious XRP address
+
+  header        SH_HBL_EMAILS	  eval:check_sh_emails('_email.your_DQS_key.hbl.dq.spamhaus.net.', '^127\.0\.3\.2')
+  priority      SH_HBL_EMAILS	  -100
+  describe      SH_HBL_EMAILS	  Email address listed in email blocklist
+
+endif # Mail::SpamAssassin::Plugin::SH
+

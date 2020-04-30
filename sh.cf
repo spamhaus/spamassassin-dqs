@@ -1,4 +1,4 @@
-# Spamhaus's SpamAssassin setup version 20190709
+# Spamhaus's SpamAssassin setup version 20200430
 
 
 ifplugin Mail::SpamAssassin::Plugin::SH
@@ -8,12 +8,12 @@ ifplugin Mail::SpamAssassin::Plugin::SH
   meta		RCVD_IN_AUTHBL		__RCVD_IN_AUTHBL
   describe	RCVD_IN_AUTHBL		Received via a relay in Spamhaus AuthBL
 
-  header	__RCVD_IN_ZEN	eval:check_rbl('zen','your_DQS_key.zen.dq.spamhaus.net.')
+  header	__RCVD_IN_ZEN	eval:check_rbl('zendqs','your_DQS_key.zen.dq.spamhaus.net.')
   tflags	__RCVD_IN_ZEN	net
 
-  header	__RCVD_IN_ZEN_LASTEXTERNAL	eval:check_rbl('zen-lastexternal', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.([2-9]|10|11)$')
+  header	__RCVD_IN_ZEN_LASTEXTERNAL	eval:check_rbl('zendqs-lastexternal', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.([2-9]|10|11)$')
   tflags	__RCVD_IN_ZEN_LASTEXTERNAL	net
-  priority      __RCVD_IN_ZEN_LASTEXTERNAL      -200
+  priority	__RCVD_IN_ZEN_LASTEXTERNAL	-200
   meta		RCVD_IN_ZEN_LASTEXTERNAL	__RCVD_IN_ZEN_LASTEXTERNAL
   describe	RCVD_IN_ZEN_LASTEXTERNAL	The last untrusted relay is listed in Spamhaus ZEN
 
@@ -21,18 +21,18 @@ ifplugin Mail::SpamAssassin::Plugin::SH
     shortcircuit	RCVD_IN_ZEN_LASTEXTERNAL	spam
   endif # Mail::SpamAssassin::Plugin::Shortcircuit
 
-  header	__RCVD_IN_SBL		eval:check_rbl_sub('zen', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.2$')
+  header	__RCVD_IN_SBL		eval:check_rbl_sub('zendqs', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.2$')
   meta		RCVD_IN_SBL		__RCVD_IN_SBL
-  header	__RCVD_IN_SBL_CSS	eval:check_rbl_sub('zen', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.3$')
+  header	__RCVD_IN_SBL_CSS	eval:check_rbl_sub('zendqs', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.3$')
   meta		RCVD_IN_SBL_CSS		__RCVD_IN_SBL_CSS
-  header	__RCVD_IN_SBL_DROP	eval:check_rbl_sub('zen', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.9$')
+  header	__RCVD_IN_SBL_DROP	eval:check_rbl_sub('zendqs', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.9$')
   meta		RCVD_IN_SBL_DROP	__RCVD_IN_SBL_DROP
 
-  header	__RCVD_IN_XBL		eval:check_rbl('zen', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.[4567]$')
-  tflags	__RCVD_IN_XBL		net
-  meta		RCVD_IN_XBL		__RCVD_IN_XBL
+#  score		RCVD_IN_XBL		0
+  header	RCVD_IN_XBL		eval:check_rbl('zendqs', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.[4567]$')
+  tflags	RCVD_IN_XBL		net
 
-  header	__RCVD_IN_PBL		eval:check_rbl('zen', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.1[01]$')
+  header	__RCVD_IN_PBL		eval:check_rbl('zendqs', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.1[01]$')
   tflags	__RCVD_IN_PBL		net
   meta		RCVD_IN_PBL		__RCVD_IN_PBL
 
@@ -149,5 +149,20 @@ ifplugin Mail::SpamAssassin::Plugin::SH
   header	SH_REVERSE_ZRD_FRESH	eval:check_sh_reverse('your_DQS_key.zrd.dq.spamhaus.net', '^127\.0\.2\.([5-9]|1[0-9]|2[0-4])$')
   priority	SH_REVERSE_ZRD_FRESH	-100
   describe	SH_REVERSE_ZRD_FRESH	The RDNS of last untrusted relay's IP is listed in ZRD and the domain age is between 5 and 24 hours
+
+  meta		SH_AUTHBL_AND_DBL_ABUSED	URIBL_DBL_ABUSE_SPAM && RCVD_IN_AUTHBL
+  describe	SH_AUTHBL_AND_DBL_ABUSED	Sender IP listed in AuthBL and body contains an abused url
+
+  # Redefining these rules even if they will -never- fire on a DQS installation.
+  # This is needed because queries to the public mirrors will go underway even if the rules are zeroed
+
+  urirhssub       URIBL_DBL_BLOCKED_OPENDNS  your_DQS_key.dbl.dq.spamhaus.net.       A   127.255.255.254
+  urirhssub       URIBL_DBL_BLOCKED  your_DQS_key.dbl.dq.spamhaus.net.       A   127.255.255.255
+
+  uridnssub URIBL_ZEN_BLOCKED_OPENDNS  your_DQS_key.zen.dq.spamhaus.net.       A   127.255.255.254
+  uridnssub URIBL_ZEN_BLOCKED  your_DQS_key.zen.dq.spamhaus.net.       A   127.255.255.255
+
+  header RCVD_IN_ZEN_BLOCKED_OPENDNS    eval:check_rbl('zendqs-lastexternal', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.255\.255\.254$')
+  header RCVD_IN_ZEN_BLOCKED    eval:check_rbl('zendqs-lastexternal', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.255\.255\.255$')
 
 endif # Mail::SpamAssassin::Plugin::SH 

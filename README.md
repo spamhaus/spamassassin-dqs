@@ -1,16 +1,18 @@
 
-# Use DQS with SpamAssassin
+# Using DQS with SpamAssassin
 
-This repository contains configuration files and a plugin written for SpamAssassin (https://spamassassin.apache.org/) that enables you to use Spamhaus Technology Data Query Service (DQS) product
+This repository contains the configuration files and a plugin written for SpamAssassin, (https://spamassassin.apache.org/) for use with Spamhaus Technology Data Query Service (DQS) product.
 
 ***
 
 ### Table of contents
 - [What is DQS](#what-is-dqs)?
-- [What are the zones available with DQS](#what-are-the-zones-available-with-dqs)?
+- [What zones are available with DQS](#what-zones-are-available-with-dqs)?
 - [What are the advantages of DQS](#what-are-the-advantages-of-dqs)?
-- [How does DQS Performs](#how-does-dqs-performs)?
+- [How does DQS Perform](#how-does-dqs-perform)?
+	- [HBL performance boost](#hbl-performance-boost)
 - [What is the licensing for DQS](#what-is-the-licensing-for-dqs)?
+- [What is the difference between paid-for and free DQS](#what-is-the-difference-between-paid-for-and-free-dqs)?
 - [How do I register a DQS key](#how-do-i-register-a-dqs-key)?
 - [Prerequisites](#prerequisites)
 - [Conventions](#conventions)
@@ -24,56 +26,73 @@ This repository contains configuration files and a plugin written for SpamAssass
 
 ***
 
-#### What is DQS
+#### What is DQS?
 
-DQS (acronym for Data Query Service) is a set of DNSBLs with real time updates operated by Spamhaus Technology ([https://www.spamhaustech.com](https://www.spamhaustech.com))
-
-***
-
-#### What are the zones available with DQS
-
-All zones and their meaning with all possible return codes are documented [here](https://docs.spamhaustech.com/10-data-type-documentation/datasets/030-datasets.html)
+Data Query Service (DQS) is a set of DNSBLs, updated in real-time, operated by Spamhaus Technology ([https://www.spamhaustech.com](https://www.spamhaustech.com))
 
 ***
 
-#### What are the advantages of DQS
+#### What zones are available with DQS?
 
-There are some. First of all you will get real time updates instead of one minute delayed updates that you get querying the public mirrors or getting an RSYNC feed.
-Sixty seconds doesn't seem too much but when dealing with hailstormers they are *crucial*. The increase in catch rate between public mirrors and DQS is mostly thanks to the real time updates.
-
-Along with the above advantage you will also get two new zones to query, ZRD (Zero Reputation Domains) and AuthBL.
-
-ZRD automatically adds newly-registered and previously dormant domains to a block list for 24 hours. It also gives you return codes that indicate the age of the domain in hours since first observation.
-
-AuthBL is mostly dedicated to anyone that operates a submission smtp server. It's a list of IPs that are known to host bots that use stolen credentials to spam. If one of your customer gets his credentials stolen, AuthBL greatly mitigates the problem of botnets to abuse the account, and keeps your MTAs safe from being blacklisted.
+All zones, their definitions, and all possible return codes are documented [here](https://docs.spamhaustech.com/10-data-type-documentation/datasets/030-datasets.html)
 
 ***
 
-#### How does DQS performs
+#### What are the advantages of DQS?
 
-You can [see it by yourself](https://www.virusbulletin.com/testing/results/latest/vbspam-email-security). We are independently tested by Virus Bulletin, that tests both DQS and public mirror performances. The difference is that DQS catches up to 42% more spam than our public mirrors.
-And please be aware that that results on VBSpam are achieved by using *only* the DQS dataset, meaning that if you just add an antivirus to your email filtering setup you can possibly reach the same performance as other commercial antispam products.
+With DQS, Spamhaus provides real time updates instead of the one-minute-delayed updates that are used by the public mirrors and the RSYNC feed.
+Sixty seconds doesn't seem like much, but when dealing with hailstormers they are *crucial*: the increase in catch rate between the public mirrors and DQS is mostly due to the real time updates.
+
+Along with the above advantage, free DQS users will also get two new zones to query, Zero Reputation Domains (ZRD) and AuthBL. Paid-for DQS users will also get access to the Hash BlockList (HBL).
+
+ZRD automatically adds newly-registered as well as previously-dormant domains to a block list for 24 hours. It also gives return codes that indicate the age of the domain (in hours) since first detection.
+
+AuthBL is primarily designed for use by anyone operating a submission SMTP server. It is a list of IPs that are known to host bots that use stolen credentials to spam. If one of your customers gets their credentials stolen, AuthBL greatly mitigates the ability of botnets to abuse the account, and keeps your MTAs safe from collateral damage.
+
+HBL is a zone dedicated to deal with sextortions/scam cryptowallets, dropbox emails and malicious files.
+
+***
+
+#### How does DQS perform?
+
+You can [see it yourself](https://www.virusbulletin.com/testing/results/latest/vbspam-email-security). We are independently tested by Virus Bulletin, a company that tests both DQS and public mirror performances. The difference between them is that DQS catches up to 42% more spam than our public mirrors.
+NOTE: Results on VBSpam are achieved by using *only* the DQS dataset, meaning that if you just add an antivirus to your email filtering setup you can potentially reach the same performance as other commercial antispam products.
+
+#### HBL performance boost
+
+While we know that every scenario is different, our in the field observations made using the Virus Bulletin spam feed shows that including HBL in your antispam setup could roughly boost spam detection from 0,3% up to slightly more than 1%
 
 ***
 
 #### What is the licensing for DQS?
 
-The usage terms are [the same](https://www.spamhaus.org/organization/dnsblusage/) as the ones for our public mirrors, meaning that if you already use our public mirrors you are entitled for a free DQS key.
+The usage terms are [the same](https://www.spamhaus.org/organization/dnsblusage/) as the terms for our public mirrors, meaning that if you already use our public mirrors you are entitled to a free DQS key.
+
+***
+
+#### What is the difference between paid-for and free DQS?
+
+With free DQS you have access to ZRD and AuthBL, and you must abide by the [free usage policy limits](https://www.spamhaus.org/organization/dnsblusage/) 
+
+With a paid subscription there is no query limit, and access to HBL (the new zone that deals with cryptovalues, emails and malware) is included. 
+
+All the technical information about HBL is available [here](https://docs.spamhaustech.com/10-data-type-documentation/datasets/030-datasets.html#hbl)
+
+If you have a free DQS subscription and would like to trial HBL, please send an email to [sales@spamteq.com](mailto:sales@spamteq.com) including your customer ID, and you will be contacted by one of our representative to activate a 30 day trial.
 
 ***
 
 #### How do I register a DQS key?
 
-It's very easy, just go [here](https://www.spamhaustech.com/dqs/) and complete the registration procedure. After you register an account, go to [this](https://portal.spamhaustech.com/manuals/dqs/) page and you'll find the DQS key under section "1.0 Datafeed Query Service".
+Just go [here](https://www.spamhaustech.com/dqs/) and complete the registration procedure. After you register an account, go to [this](https://portal.spamhaustech.com/manuals/dqs/) page and you'll find the DQS key under section "1.0 Datafeed Query Service".
 
 ***
 
 #### Prerequisites
 
-You naturally need a DQS key along with SpamAssassin 3.4.1+ already installed on your system. These instructions do not cover the initial SpamAssassin installation. 
-To correctly install SpamAssassin please refer to instructions applicable to your distribution.
+You need a DQS key along with an existing SpamAssassin 3.4.1+ installation on your system. These instructions do not cover the initial SpamAssassin installation. To correctly install SpamAssassin, please refer to instructions applicable to your SpamAssassin distribution.
 
-The scores in this configuration files are weighted for a `required_score` of 4 instead of the default 6. If you use a different `required_score` adjust the values accordingly.
+The scores in this configuration file are weighted for a `required_score` of 4 instead of the default 6. If you use a different `required_score`, remember to adjust the values accordingly.
 
 ***
 
@@ -83,12 +102,12 @@ We are going to use some abbreviations and placeholders:
 
  * SA: SpamAssassin
  * SH: Spamhaus
- * *configuration directory*: whenever you'll find these italic words, we will refer to SA's configuration directory. Depending on your distribution it may be `/etc/spamassassin` or `/etc/mail/spamassassin` or other
- * whenever you find the box below, it means that you need to enter the command on your shell:
+ * *configuration directory*: whenever you find these italic words, we are referring to SA's configuration directory. Depending on your distribution it may be `/etc/spamassassin` or `/etc/mail/spamassassin` or something else.
+ * Whenever you see the box below, it means that you need to enter the command on your shell:
 ```
 	$ command
 ```
- * whenever you find the box below, it means that you need to enter the command on a shell with root privileges:
+ * Whenever you see the box below, it means that you need to enter the command on a shell with *root privileges*:
 ```
 	# command
 ```
@@ -97,7 +116,7 @@ We are going to use some abbreviations and placeholders:
 
 #### Install from Github
 
-Start with downloading the latest package:
+Start by downloading the latest package:
 
 ```
 	$ git clone https://github.com/spamhaus/spamassassin-dqs
@@ -112,42 +131,83 @@ Start with downloading the latest package:
 A subdirectory called `spamassassin-dqs` will be created. Within it you will find the following files:
 
 - `README.md`. This is just a pointer to this document.
+- `Changelog.md`. The changes log file
+- `hbltest.sh`. A script that helps you know if your DQS key is HBL enabled
 - `sh.pre`. This file is the loader for the plugin
 - `SH.pm`. This is a dedicated SA plugin written by SH that overcomes some of SA's limitations
 - `sh.cf`. This file contains lookup redefinitions and will need to be edited (see below)
 - `sh_scores.cf`. In this file we override some of SA's default rule scoring
+- `sh_hbl.cf`. Definitions for HBL lookups
+- `sh_hbl_scores.cf`. Definitions for HBL lookups scores
 - `LICENSE`. The Apache software license
 - `NOTICE`. A file containing copyright notices
 
-Now it's time to configure your DQS key. Assuming your key is `aip7yig6sahg6ehsohn5shco3z`, execute the following command:
+Next, configure your DQS key. Assuming your key is `aip7yig6sahg6ehsohn5shco3z`, execute the following commands:
 
 ```
 	$ cd spamassassin-dqs
 	$ sed -i -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
+	$ sed -i -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh_hbl.cf
 ```
 
-If you are on FreeBSD then the command slightly changes:
+If you are using FreeBSD, the commands change slightly:
 
 ```
 	$ cd spamassassin-dqs
 	$ sed -i "" -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
+	$ sed -i "" -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh_hbl.cf
 ```
 
-There will be no output, but your key will be placed inside `sh.cf` in all the needed places.
+There will be no output, but the key will be inserted into `sh.cf` and `sh_hbl.cf` in all the needed places.
 
-Edit `sh.pre` with your editor of choice, and take a look at the first line:
+Edit `sh.pre` with your editor of choice, and look at the first line:
 
 ```
 	loadplugin       Mail::SpamAssassin::Plugin::SH <config_directory>/SH.pm
 ```
 
-You will need to replace `<config_directory\>` with your actual *configuration directory*. So, for example, if your *configuration directory* is `/etc/mail/spamassassin`, the line will become:
+You will need to replace `<config_directory>` with your actual *configuration directory*. So, for example, if your *configuration directory* is `/etc/mail/spamassassin`, the line will become:
 
 ```
 	loadplugin       Mail::SpamAssassin::Plugin::SH /etc/mail/spamassassin/SH.pm
 ```
 
-Finally, copy the files in SpamAssassin's *configuration directory*. Assuming it is `/etc/mail/spamassassin`, you'll need to issue these commands:
+We provide a simple script to help you verify whether your DQS key is HBL enabled or not. Use this script to understand what files to copy in your Rspamd config directory. You only need to run the script and input your DQS key.
+
+Assuming the example key ```aip7yig6sahg6ehsohn5shco3z``` *is* DQS enabled, run the script and the output will confirm whether your key is HBL enabled:
+
+```
+	$ sh hbltest.sh
+	Please input your DQS key: aip7yig6sahg6ehsohn5shco3z
+	Looking up test record for HBL... done
+	Your DQS key aip7yig6sahg6ehsohn5shco3z is enabled for HBL
+	You can copy sh_hbl.cf and sh_hbl_scores.cf if you want HBL enabled
+```
+
+If your key is not HBL enabled (meaning that you registered a FREE DQS key and did not use a paid subscription) the output will be the following:
+
+```
+	$ sh hbltest.sh 
+	Please input your DQS key: aip7yig6sahg6ehsohn5shco3z
+	Looking up test record for HBL... done
+	Your DQS key aip7yig6sahg6ehsohn5shco3z is -=NOT=- enabled for HBL
+	Please *do not* copy sh_hbl.cf and sh_hbl_scores.cf
+```
+
+Based on the output of the above script, copy the relevant .cf files in SA *configuration directory*.
+
+If you have an HBL enabled key, and assuming the *configuration directory* is `/etc/mail/spamassassin` do the following:
+
+```
+	# cp SH.pm /etc/mail/spamassassin
+	# cp sh.cf /etc/mail/spamassassin
+	# cp sh_scores.cf /etc/mail/spamassassin
+	# cp sh_hbl.cf /etc/mail/spamassassin
+	# cp sh_hbl_scores.cf /etc/mail/spamassassin
+	# cp sh.pre /etc/mail/spamassassin
+```
+
+If your key is *not* HBL enabled, this is what needs to be done:
 
 ```
 	# cp SH.pm /etc/mail/spamassassin
@@ -156,7 +216,9 @@ Finally, copy the files in SpamAssassin's *configuration directory*. Assuming it
 	# cp sh.pre /etc/mail/spamassassin
 ```
 
-Now test the setup by running:
+We strongly suggest to not copy the HBL files if your key is not HBL enabled, as the lookups timout will very likely slow SA email processing.
+
+Next, test the setup by running:
 
 ```
 	# spamassassin --lint
@@ -168,12 +230,12 @@ This command checks the whole SA installation; if you don't see any output then 
 
 #### Install from FreeBSD ports
 
-[lrosenman](https://github.com/lrosenman) is mantaining a FreeBSD port of our plugin. We don't give support for this port, but if you want to use it the instructions are as follows:
+[lrosenman](https://github.com/lrosenman) maintains a FreeBSD port of our plugin. We don't give support for this port, but if you want to use it, the instructions are as follows:
 
 ```
 	# pkg install spamassassin-dqs
 ```
-and then follow the  instructions.
+and then follow the instructions.
 
 Or, if using ports:
 
@@ -186,7 +248,7 @@ Or, if using ports:
 
 ## Plugin internals
 
-While we undoubtedly recognize SpamAssassin's abilities at stopping spam with only minor tweakings to the default config, there are some key uses of our datasets that can be fully taken advantage of only by writing some special SA functions. This is why we decided to develop this special plugin that includes these functions:
+While we acknowledge SpamAssassin's abilities at stopping spam with only minor tweaking of the default config, there are some key uses of our datasets that can only be fully taken advantage of by writing some special SA functions. That is why we decided to develop this special plugin that includes these functions:
 
  * `check_sh_helo`.
 This function checks the domain used in the HELO/EHLO string against DBL and ZRD.
@@ -195,30 +257,46 @@ This function checks the domain used in the HELO/EHLO string against DBL and ZRD
 This function takes the domain out of the *From* , *Reply-to* , *Envelope From*, *Return-Path* header lines and then checks the domain against DBL and ZRD.
 
  * `check_sh_bodyemail`.
-This function scans the email body looking for email addresses. For all email addresses found, it extracts the domain and check it against DBL and ZRD. This approach has been proven useful, for example, in some dating scams campaign.
+This function scans the email body looking for email addresses. For all email addresses found, it extracts the domain and check it against DBL and ZRD. This approach has been proven useful, for example, in some dating-scam campaigns.
 
  * `check_sh_bodyemail_ns`.
-This function scans the email body looking for email addresses. For all email addresses found, it extracts the domain and then checks its authoritative nameservers IPs in SBL (beta, not used but you are encouraged to try it)
+This function scans the email body looking for email addresses. For all email addresses found, it extracts the domain and then checks its authoritative nameservers IPs in SBL (beta, not used, but you are encouraged to try it).
 
  * `check_sh_reverse`
 This function checks the reverse DNS (rDNS) of the last untrusted relay in both DBL and ZRD
 
  * `check_sh_bodyuri_a`
- This function scans the email body and looks for URLs; when one is found the hostname is then resolved and the resulting IP address is checked in SBL and CSS
+ This function scans the email body and looks for URLs; when one is found the hostname is then resolved, and the resulting IP address is checked in SBL and CSS.
 
  * `check_sh_bodyuri_ns`
- This function scans the email body and looks for URLs; when one is found it takes the domain's authoritative nameservers IPs and checks them in SBL (beta, not used but you are encouraged to try it)
+ This function scans the email body and looks for URLs; when one is found it takes the domain's authoritative nameservers IPs and checks them in SBL (beta, not used, but you are encouraged to try it).
+ 
+ * `check_sh_crypto`
+ This functions looks for cryptowallets in the email body and checks them in HBL. As of today, we support the following cryptos:
+ 	 - BTC
+	 - BCH
+	 - XMR
+	 - LTC
+	 - XRP
+	 - ETH
+	 
+* `check_sh_attachment`
+This functions computes the hash of all the attachments and checks them in HBL, looking for confirmed or suspect malware.
+
+* `check_sh_emails`
+This functions collects all email addresses from headers and body and checks their hashes in HBL.
+ 
  
  ***
  
 ## Final recommendations
  
-We already said that the configuration in the VBSpam survey make use exclusively of our data, as our goal was certifying their quality and keep an eye on how we perform in the field.
+The configuration in the VBSpam survey makes exclusive use of our data, since our goal was to certify their quality, and to keep an eye on how we perform in the field.
 
-While the results are reasonably good, the malware/phishing scoring can certainly be improved through some additional actions that we recommend.
+While the results are reasonably good, the malware/phishing scoring can certainly be improved by employing some additional actions that we recommend.
 
-- Install an antivirus software on your mailserver
-- Nowadays the rule of thumb for receiving email should be to stay defensive, that is why we recommend to do basic attachment filtering by dropping all emails that contains potentially hazardous attachments, like *at least* all file extensions that match this regex:
+- Install an antivirus software on your mailserver;
+- The modern rule of thumb for receiving email should be to "stay defensive", which is why we recommend doing basic attachment filtering by dropping all emails that contains potentially hazardous attachments, at *minimum* all file extensions that match this regex:
 
 ```
 (exe|vbs|pif|scr|bat|cmd|com|cpl|dll|cpgz|chm|js|jar|wsf)
@@ -228,10 +306,10 @@ While the results are reasonably good, the malware/phishing scoring can certainl
 
 ## Support and feedback
 
-We would be happy to receive some feedback from you. If you notice any problem with this installation, please drop us a note at datafeed-support@spamteq.com and we'll try to do our best to help you.
+We would be happy to receive your feedback! If you notice any problems with this installation, please open a Github issue and we'll do our best to help you.
 
-Remember that we are going to support only the latest version, so please before opening a support request be sure to be running the up to date code from this github repository.
+Remember that we are only going to support the latest version, so before opening an issue, please be sure to be running the up-to-date code from this Github repository.
 
 ## Acknowledgements
 
-We'd like to thank everyone for their suggestions. This plugin has been written by using other more well-written plugins as examples, especially [HashBL](https://github.com/smfreegard/HashBL/) from where we borrowed a lot of code. 
+We'd like to thank everyone for their suggestions and contributions!
