@@ -31,7 +31,7 @@ use Mail::SpamAssassin::Plugin;
 use Mail::SpamAssassin::PerMsgStatus;
 use Socket;
 use Mail::SpamAssassin::Logger;
-use Digest::SHA qw(sha256);
+use Digest::SHA qw(sha256 );
 use Sys::Syslog qw( :DEFAULT setlogsock);
 
 our @ISA = qw(Mail::SpamAssassin::Plugin);
@@ -711,7 +711,7 @@ sub check_sh_crypto {
 sub check_sh_attachment {
   my ($self,$pms,$body,$list,$subtest) = @_;
   my $rulename = $pms->get_current_eval_rule_name();
-  foreach my $part ($pms->{msg}->find_parts(qr/./, 1, 0)) {
+  foreach my $part ($pms->{msg}->find_parts(qr/./, 1, 1)) {
     my ($ctt, $ctd, $cte, $name) = _get_part_details($pms, $part);
     next unless defined $ctt;
     my $hash = encode_base32(sha256($part->decode()));
