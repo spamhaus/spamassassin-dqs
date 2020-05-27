@@ -18,7 +18,7 @@
 # at <spamassassin at spamteq.com> for questions/suggestions related
 # with this plug-in exclusively.
 
-# version 20200430
+# version 20200527
 
 package Mail::SpamAssassin::Plugin::SH;
 
@@ -42,6 +42,17 @@ sub new {
   my $self = $class->SUPER::new( $mailsa );
   bless ($self, $class);
   $self->set_config($mailsa->{conf});
+  my $sa_version_full = Mail::SpamAssassin::Version();
+  my $sa_version = $sa_version_full;
+  $sa_version =~ tr/\.//d;
+  if ($sa_version < 341) {
+   print("\nSHPlugin: ************************** WARNING *************************\n");
+   print("SHPlugin: This plugin will work only with SpamAssassin 3.4.1 and above\n");
+   print("SHPlugin: Your currently installed version is $sa_version_full\n");
+   print("SHPlugin: ******************** THIS WILL NOT WORK ********************\n");
+   print("SHPlugin: Remove sh.pre file or update SpamAssassin\n\n");
+   die();
+  }
   # are network tests enabled?
   if ($mailsa->{local_tests_only}) {
     $self->{sh_available} = 0;

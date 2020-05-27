@@ -172,7 +172,7 @@ You will need to replace `<config_directory>` with your actual *configuration di
 	loadplugin       Mail::SpamAssassin::Plugin::SH /etc/mail/spamassassin/SH.pm
 ```
 
-We provide a simple script to help you verify whether your DQS key is HBL enabled or not. Use this script to understand what files to copy in your Rspamd config directory. You only need to run the script and input your DQS key.
+We provide a simple script to help you verify whether your DQS key is HBL enabled or not. Use this script to understand what files to copy in your SpamAssassin config directory. You only need to run the script and input your DQS key.
 
 Assuming the example key ```aip7yig6sahg6ehsohn5shco3z``` *is* DQS enabled, run the script and the output will confirm whether your key is HBL enabled:
 
@@ -225,6 +225,20 @@ Next, test the setup by running:
 ```
 	
 This command checks the whole SA installation; if you don't see any output then congratulations! You successfully installed SH's SA setup. You only need to restart SpamAssassin to have the plugin loaded.
+
+In case you tried installing the plugin with a wrong SpamAssassin version (< 3.4.1) you will receive a warning similar to the following :
+
+```
+	# spamassassin --lint
+
+	SHPlugin: ************************** WARNING *************************
+	SHPlugin: This plugin will work only with SpamAssassin 3.4.1 and above
+	SHPlugin: Your currently installed version is 3.4.0
+	SHPlugin: ******************** THIS WILL NOT WORK ********************
+	SHPlugin: Remove sh.pre file or update SpamAssassin
+```
+
+Be sure to follow the instructions and remove all the previously copied files. As stated above, the plugin will work only on SpamAssassin 3.4.1 and above. 
 
 ***
 
