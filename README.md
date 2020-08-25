@@ -92,8 +92,6 @@ Just go [here](https://www.spamhaustech.com/dqs/) and complete the registration 
 
 You need a DQS key along with an existing SpamAssassin 3.4.1+ installation on your system. These instructions do not cover the initial SpamAssassin installation. To correctly install SpamAssassin, please refer to instructions applicable to your SpamAssassin distribution.
 
-The scores in this configuration file are weighted for a `required_score` of 4 instead of the default 6. If you use a different `required_score`, remember to adjust the values accordingly.
-
 ***
 
 #### Conventions
