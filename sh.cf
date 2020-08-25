@@ -1,4 +1,4 @@
-# Spamhaus's SpamAssassin setup version 20200527
+# Spamhaus's SpamAssassin setup version 20200825
 
 
 ifplugin Mail::SpamAssassin::Plugin::SH
@@ -21,11 +21,11 @@ ifplugin Mail::SpamAssassin::Plugin::SH
     shortcircuit	RCVD_IN_ZEN_LASTEXTERNAL	spam
   endif # Mail::SpamAssassin::Plugin::Shortcircuit
 
-  header	__RCVD_IN_SBL		eval:check_rbl_sub('zendqs', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.2$')
+  header	__RCVD_IN_SBL		eval:check_rbl('zendqs', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.2$')
   meta		RCVD_IN_SBL		__RCVD_IN_SBL
-  header	__RCVD_IN_SBL_CSS	eval:check_rbl_sub('zendqs', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.3$')
+  header	__RCVD_IN_SBL_CSS	eval:check_rbl('zendqs', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.3$')
   meta		RCVD_IN_SBL_CSS		__RCVD_IN_SBL_CSS
-  header	__RCVD_IN_SBL_DROP	eval:check_rbl_sub('zendqs', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.9$')
+  header	__RCVD_IN_SBL_DROP	eval:check_rbl('zendqs', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.9$')
   meta		RCVD_IN_SBL_DROP	__RCVD_IN_SBL_DROP
 
 #  score		RCVD_IN_XBL		0
