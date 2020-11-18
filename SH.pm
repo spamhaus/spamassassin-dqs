@@ -121,18 +121,35 @@ sub _init_email_re {
   }
   # Some regexp tips courtesy of http://www.regular-expressions.info/email.html
   # full email regex v0.02
-  $self->{email_regex} = qr/
-    (?=.{0,64}\@)                       # limit userpart to 64 chars (and speed up searching?)
-    (?<![a-z0-9!#\$%&'*+\/=?^_`{|}~-])  # start boundary
-    (                                   # capture email
-    [a-z0-9!#\$%&'*+\/=?^_`{|}~-]+      # no dot in beginning
-    (?:\.[a-z0-9!#\$%&'*+\/=?^_`{|}~-]+)* # no consecutive dots, no ending dot
-    \@
-    (?:[a-z0-9](?:[a-z0-9-]{0,59}[a-z0-9])?\.){1,4} # max 4x61 char parts (should be enough?)
-    $self->{main}->{registryboundaries}->{valid_tlds_re} # ends with valid tld
-    )
-    (?!(?:[a-z0-9-]|\.[a-z0-9]))      # make sure domain ends here
-  /xi;
+  if ($sa_version < 343) {
+    # Add the "make sure domain ends here" code to prevent "example.com"
+    # from being wrongly parsed as "example.co" (this code is already present
+    # in SpamAssassin 3.4.3)
+    $self->{email_regex} = qr/
+      (?=.{0,64}\@)                       # limit userpart to 64 chars (and speed up searching?)
+      (?<![a-z0-9!#\$%&'*+\/=?^_`{|}~-])  # start boundary
+      (                                   # capture email
+      [a-z0-9!#\$%&'*+\/=?^_`{|}~-]+      # no dot in beginning
+      (?:\.[a-z0-9!#\$%&'*+\/=?^_`{|}~-]+)* # no consecutive dots, no ending dot
+      \@
+      (?:[a-z0-9](?:[a-z0-9-]{0,59}[a-z0-9])?\.){1,4} # max 4x61 char parts (should be enough?)
+      $self->{main}->{registryboundaries}->{valid_tlds_re} # ends with valid tld
+      )
+      (?!(?:[a-z0-9-]|\.[a-z0-9]))      # make sure domain ends here
+    /xi;
+  } else {
+    $self->{email_regex} = qr/
+      (?=.{0,64}\@)                       # limit userpart to 64 chars (and speed up searching?)
+      (?<![a-z0-9!#\$%&'*+\/=?^_`{|}~-])  # start boundary
+      (                                   # capture email
+      [a-z0-9!#\$%&'*+\/=?^_`{|}~-]+      # no dot in beginning
+      (?:\.[a-z0-9!#\$%&'*+\/=?^_`{|}~-]+)* # no consecutive dots, no ending dot
+      \@
+      (?:[a-z0-9](?:[a-z0-9-]{0,59}[a-z0-9])?\.){1,4} # max 4x61 char parts (should be enough?)
+      $self->{main}->{registryboundaries}->{valid_tlds_re} # ends with valid tld
+      )
+    /xi;
+  }
 # lazy man debug
 #open(my $fh, '>', "/tmp/reg") or die "Could not open file $!";
 #print $fh $self->{email_regex};
