@@ -296,9 +296,12 @@ sub _get_domains_from_body_emails {
     s#<?(?<!mailto:)$self->{email_regex}(?:>|\s{1,10}(?!(?:fa(?:x|csi)|tel|phone|e?-?mail))[a-z]{2,11}:)# #gi;
     while (/$self->{email_regex}/g) {
       my $email = lc($1);
-      my ($this_user, $this_domain )       = split('@', $email);
-      push(@body_domains, $this_domain) unless defined $seen{$this_domain};
-      $seen{$this_domain} = 1;
+      my ($this_user, $this_hostname )     = split('@', $email);
+      my $this_domain = $self->{'main'}->{'registryboundaries'}->uri_to_domain($this_hostname);
+      if ($this_domain) {
+        push(@body_domains, $this_domain) unless defined $seen{$this_domain};
+        $seen{$this_domain} = 1;
+      }
       last BODY if scalar @body_domains >= 40; # sanity
     }
   }
