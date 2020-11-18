@@ -628,7 +628,7 @@ sub check_sh_bodyuri_ns {
   (@uris) = _get_body_uris($self,$pms,$bodyref);
   foreach my $this_hostname (@uris) { 
     my $this_domain = $self->{'main'}->{'registryboundaries'}->uri_to_domain($this_hostname);
-    if (!($skip_domains->{$this_hostname})) {
+    if (!($skip_domains->{$this_domain})) {
       dbg("SHPlugin: (check_sh_bodyuri_ns) checking authoritative NS for domain ".$this_domain." from URI ".$this_hostname." found in body");
       my $res   = Net::DNS::Resolver->new;
       $res->udp_timeout(3);
