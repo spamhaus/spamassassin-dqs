@@ -131,6 +131,7 @@ sub _init_email_re {
     (?:[a-z0-9](?:[a-z0-9-]{0,59}[a-z0-9])?\.){1,4} # max 4x61 char parts (should be enough?)
     $self->{main}->{registryboundaries}->{valid_tlds_re} # ends with valid tld
     )
+    (?!(?:[a-z0-9-]|\.[a-z0-9]))      # make sure domain ends here
   /xi;
 # lazy man debug
 #open(my $fh, '>', "/tmp/reg") or die "Could not open file $!";
