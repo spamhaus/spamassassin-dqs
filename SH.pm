@@ -508,16 +508,17 @@ sub check_sh_helo {
   }
 
   my $helo = $lasthop->{helo};
-  if (!($skip_domains->{$helo})) {
-    dbg ("SHPlugin: (check_sh_helo) checking HELO (helo=$helo)");
-    my $lookup = $helo.".".$list;
+  my $helo_domain = $self->{'main'}->{'registryboundaries'}->uri_to_domain($helo);
+  if ($helo_domain and !($skip_domains->{$helo_domain})) {
+    dbg ("SHPlugin: (check_sh_helo) checking domain $helo_domain of HELO (helo=$helo)");
+    my $lookup = $helo_domain.".".$list;
     my $key = "SH:$lookup";
     my $ent = {
       key => $key,
       zone => $list,
       type => 'SH',
       rulename => $rulename,
-      addr => $helo,
+      addr => $helo_domain,
     };
     $ent = $pms->{async}->bgsend_and_start_lookup($lookup, 'A', undef, $ent, sub {
       my ($ent, $pkt) = @_;
@@ -665,22 +666,25 @@ sub check_sh_reverse {
 
   my $rdns = $lasthop->{rdns};
   if ($rdns) {
-    dbg ("SHPlugin: (check_sh_reverse) checking RDNS of the last untrusted relay (rdns=$rdns)");
-    if ((substr $rdns, -1) eq ".") { chop $rdns; }
-    my $lookup = $rdns.".".$list;
-    my $key = "SH:$lookup";
-    my $ent = {
-      key => $key,
-      zone => $list,
-      type => 'SH',
-      rulename => $rulename,
-      addr => $rdns,
-    };
-    $ent = $pms->{async}->bgsend_and_start_lookup($lookup, 'A', undef, $ent, sub {
-      my ($ent, $pkt) = @_;
-      $self->_finish_lookup($pms, $ent, $pkt, $subtest);
-    }, master_deadline => $pms->{master_deadline});
-    return 0;
+    my $rdns_domain = $self->{'main'}->{'registryboundaries'}->uri_to_domain($rdns);
+    if ($rdns_domain) {
+      dbg ("SHPlugin: (check_sh_reverse) checking domain $rdns_domain of RDNS of the last untrusted relay (rdns=$rdns)");
+      if ((substr $rdns_domain, -1) eq ".") { chop $rdns_domain; }
+      my $lookup = $rdns_domain.".".$list;
+      my $key = "SH:$lookup";
+      my $ent = {
+        key => $key,
+        zone => $list,
+        type => 'SH',
+        rulename => $rulename,
+        addr => $rdns_domain,
+      };
+      $ent = $pms->{async}->bgsend_and_start_lookup($lookup, 'A', undef, $ent, sub {
+        my ($ent, $pkt) = @_;
+        $self->_finish_lookup($pms, $ent, $pkt, $subtest);
+      }, master_deadline => $pms->{master_deadline});
+      return 0;
+    }
   }
 }
 
