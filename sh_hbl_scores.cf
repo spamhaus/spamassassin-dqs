@@ -1,4 +1,4 @@
-# Spamhaus's SpamAssassin setup version 20200825
+# Spamhaus's SpamAssassin setup version 20201209
 
 
 ifplugin Mail::SpamAssassin::Plugin::SH
@@ -11,7 +11,7 @@ ifplugin Mail::SpamAssassin::Plugin::SH
   score         SH_HBL_CW_XMR     10
   score         SH_HBL_CW_LTC     10
   score         SH_HBL_CW_XRP     10
-  score         SH_HBL_EMAILS     7
+  score         SH_HBL_EMAILS     8
 
 endif # Mail::SpamAssassin::Plugin::SH
 

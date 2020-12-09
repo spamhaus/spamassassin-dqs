@@ -1,52 +1,52 @@
-# Spamhaus's SpamAssassin setup version 20200825
+# Spamhaus's SpamAssassin setup version 20201209
 
 
 ifplugin Mail::SpamAssassin::Plugin::SH
 
   score	RCVD_IN_AUTHBL		2.5
-  score   SH_BODYURI_REVERSE_SBL	6
+  score   SH_BODYURI_REVERSE_SBL	8
   score   SH_BODYURI_REVERSE_CSS	3
-  score   SH_BODYURI_REVERSE_DROP	5
+  score   SH_BODYURI_REVERSE_DROP	8
   score   SH_BODYURI_REVERSE_XBL	2
   score   RCVD_IN_ZEN_LASTEXTERNAL 8
   score	RCVD_IN_XBL		1
   score	RCVD_IN_PBL		0.001
-  score	RCVD_IN_SBL		5
+  score	RCVD_IN_SBL		6
   score	RCVD_IN_SBL_CSS		3
-  score	RCVD_IN_SBL_DROP	5
-  score	URIBL_SBL		5
+  score	RCVD_IN_SBL_DROP	6
+  score	URIBL_SBL		6
   score	URIBL_SBL_A		0.1
-  score	URIBL_DBL_SPAM		6
-  score	URIBL_DBL_PHISH		6
-  score	URIBL_DBL_MALWARE	6
-  score	URIBL_DBL_BOTNETCC	6
-  score	URIBL_DBL_ABUSE_SPAM	6
+  score	URIBL_DBL_SPAM		8
+  score	URIBL_DBL_PHISH		8
+  score	URIBL_DBL_MALWARE	8
+  score	URIBL_DBL_BOTNETCC	8
+  score	URIBL_DBL_ABUSE_SPAM	7
   score	URIBL_DBL_ABUSE_REDIR	0.5
-  score	URIBL_DBL_ABUSE_PHISH	6
-  score	URIBL_DBL_ABUSE_MALW	6
-  score	URIBL_DBL_ABUSE_BOTCC	6
+  score	URIBL_DBL_ABUSE_PHISH	7
+  score	URIBL_DBL_ABUSE_MALW	7
+  score	URIBL_DBL_ABUSE_BOTCC	7
   score	URIBL_DBL_ERROR		0.001
   score	URIBL_CSS		0.1
   score	URIBL_CSS_A		0.1
   score	URIBL_SBL_A		0.1
-  score	URIBL_ZRD		3
+  score	URIBL_ZRD		6
 
-  score	SH_DBL_BODY		6
-  score	SH_ZRD_BODY		4
-  score	SH_DBL_HEADERS		6
-  score	SH_DBL_HEADERS_ABUSED	3
-  score	SH_ZRD_HEADERS_VERY_FRESH	6
-  score	SH_ZRD_HEADERS_FRESH		5
-  score	SH_REVERSE_ZRD_VERY_FRESH	6
-  score	SH_REVERSE_ZRD_FRESH		5
-  score	SH_REVERSE_DBL		6
-  score	SH_REVERSE_DBL_ABUSED	3
+  score	SH_DBL_BODY		8
+  score	SH_ZRD_BODY		6
+  score	SH_DBL_HEADERS		8
+  score	SH_DBL_HEADERS_ABUSED	4
+  score	SH_ZRD_HEADERS_VERY_FRESH	8
+  score	SH_ZRD_HEADERS_FRESH		6
+  score	SH_REVERSE_ZRD_VERY_FRESH	8
+  score	SH_REVERSE_ZRD_FRESH		6
+  score	SH_REVERSE_DBL		8
+  score	SH_REVERSE_DBL_ABUSED	4
 
-  score	SH_HELO_ZRD_VERY_FRESH	6
-  score	SH_HELO_ZRD_FRESH	5
-  score	SH_HELO_DBL		6
-  score	SH_HELO_DBL_ABUSED	3
-  score SH_AUTHBL_AND_DBL_ABUSED	5
+  score	SH_HELO_ZRD_VERY_FRESH	8
+  score	SH_HELO_ZRD_FRESH	6
+  score	SH_HELO_DBL		8
+  score	SH_HELO_DBL_ABUSED	6
+  score SH_AUTHBL_AND_DBL_ABUSED	6
 
   # DQS wont block queries
   score URIBL_DBL_BLOCKED_OPENDNS	0
