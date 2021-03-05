@@ -45,6 +45,7 @@ sub new {
   my $sa_version_full = Mail::SpamAssassin::Version();
   my $sa_version = $sa_version_full;
   $sa_version =~ tr/\.//d;
+  $sa_version = substr $sa_version, 0, 3;
   if ($sa_version < 341) {
    print("\nSHPlugin: ************************** WARNING *************************\n");
    print("SHPlugin: This plugin will work only with SpamAssassin 3.4.1 and above\n");
@@ -113,6 +114,7 @@ sub _init_email_re {
   my ($self) = @_;
   my $sa_version = Mail::SpamAssassin::Version();
   $sa_version =~ tr/\.//d;
+  $sa_version = substr $sa_version, 0, 3;
   # This is an ugly hack to make the regex work with SA 3.4.1 and possibly 3.4.0. Not recommended as TLDs are not updated
   # dinamically like in 3.4.2 where they are updated via sa-update
   if ($sa_version < 342) {
