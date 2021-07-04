@@ -72,19 +72,19 @@ ifplugin Mail::SpamAssassin::Plugin::SH
 
   body		SH_BODYURI_REVERSE_SBL	eval:check_sh_bodyuri_a('your_DQS_key.zen.dq.spamhaus.net', '^127\.0\.0\.2')
   priority	SH_BODYURI_REVERSE_SBL	-100
-  describe	SH_BODYURI_REVERSE_SBL The corrisponding A record of an URI contained in the body is listed in SBL
+  describe	SH_BODYURI_REVERSE_SBL The corresponding A record of an URI contained in the body is listed in SBL
 
   body		SH_BODYURI_REVERSE_CSS	eval:check_sh_bodyuri_a('your_DQS_key.zen.dq.spamhaus.net', '^127\.0\.0\.3')
   priority	SH_BODYURI_REVERSE_CSS	-100
-  describe	SH_BODYURI_REVERSE_CSS  The corrisponding A record of an URI contained in the body is listed in CSS
+  describe	SH_BODYURI_REVERSE_CSS  The corresponding A record of an URI contained in the body is listed in CSS
 
   body		SH_BODYURI_REVERSE_DROP	eval:check_sh_bodyuri_a('your_DQS_key.zen.dq.spamhaus.net', '^127\.0\.0\.9')
   priority	SH_BODYURI_REVERSE_DROP	-100
-  describe	SH_BODYURI_REVERSE_DROP  The corrisponding A record of an URI contained in the body is listed in DROP
+  describe	SH_BODYURI_REVERSE_DROP  The corresponding A record of an URI contained in the body is listed in DROP
 
   body		SH_BODYURI_REVERSE_XBL	eval:check_sh_bodyuri_a('your_DQS_key.zen.dq.spamhaus.net', '^127\.0\.0\.4')
   priority	SH_BODYURI_REVERSE_XBL	-100
-  describe	SH_BODYURI_REVERSE_XBL  The corrisponding A record of an URI contained in the body is listed in XBL
+  describe	SH_BODYURI_REVERSE_XBL  The corresponding A record of an URI contained in the body is listed in XBL
 
   body		SH_DBL_BODY	eval:check_sh_bodyemail('your_DQS_key.dbl.dq.spamhaus.net', '^127\.0\.1\.[2-6]$')
   priority	SH_DBL_BODY	-100
