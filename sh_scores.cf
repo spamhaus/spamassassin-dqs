@@ -1,4 +1,4 @@
-# Spamhaus's SpamAssassin setup version 20201209
+# Spamhaus's SpamAssassin setup version 20210714
 
 
 ifplugin Mail::SpamAssassin::Plugin::SH
@@ -34,18 +34,18 @@ ifplugin Mail::SpamAssassin::Plugin::SH
   score	SH_DBL_BODY		8
   score	SH_ZRD_BODY		6
   score	SH_DBL_HEADERS		8
-  score	SH_DBL_HEADERS_ABUSED	4
+  score	SH_DBL_HEADERS_ABUSED	0.001
   score	SH_ZRD_HEADERS_VERY_FRESH	8
   score	SH_ZRD_HEADERS_FRESH		6
   score	SH_REVERSE_ZRD_VERY_FRESH	8
   score	SH_REVERSE_ZRD_FRESH		6
   score	SH_REVERSE_DBL		8
-  score	SH_REVERSE_DBL_ABUSED	4
+  score	SH_REVERSE_DBL_ABUSED	0.001
 
   score	SH_HELO_ZRD_VERY_FRESH	8
   score	SH_HELO_ZRD_FRESH	6
   score	SH_HELO_DBL		8
-  score	SH_HELO_DBL_ABUSED	6
+  score	SH_HELO_DBL_ABUSED	0.001
   score SH_AUTHBL_AND_DBL_ABUSED	6
 
   # DQS wont block queries

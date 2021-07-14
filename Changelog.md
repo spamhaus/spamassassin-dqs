@@ -1,10 +1,14 @@
 Changelog for SpamAssassin DQS Plugin 
 
+- 140721
+	- Fixed scores on the abused section
+	- Tagged version 1.1.3
+
 - 091220
 	- Fixed issues thanks to robertmathews
 	- Fixes edge case spotted in check_sh_email
 	- Tagged version 1.1.2
-	
+
 - 250820
 	- Fixed issue with wrong usage of check_rbl_sub()
 	- Scores adjusted to work with the default SpamAssassin required_score of 5
