@@ -1,8 +1,3 @@
-
-# THIS IS A BETA BRANCH! 
-
-You can use for testing the final code that will be published at the end of January but you WILL NEED to change the zone for the abused-legit zone before mid February or your detection rate will fall considerably!
-
 # Using DQS with SpamAssassin
 
 This repository contains the configuration files and a plugin written for SpamAssassin, (https://spamassassin.apache.org/) for use with Spamhaus Technology Data Query Service (DQS) product.
