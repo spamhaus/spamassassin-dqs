@@ -121,7 +121,7 @@ We are going to use some abbreviations and placeholders:
 Start by downloading the latest package:
 
 ```
-	$ git clone https://github.com/spamhaus/spamassassin-dqs
+	$ git clone -b dbl-beta https://github.com/spamhaus/spamassassin-dqs
 	Cloning into 'spamassassin-dqs'...
 	remote: Enumerating objects: 11, done.
 	remote: Counting objects: 100% (11/11), done.
