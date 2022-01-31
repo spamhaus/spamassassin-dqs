@@ -3,7 +3,7 @@ Changelog for SpamAssassin DQS Plugin
 - 310122
 	- Added functions to check whole hostnames in DBL
 	- Minor fixes
-	- Tagged version 1.2
+	- Tagged version 1.2.0
 	
 - 140721
 	- Fixed scores on the abused section
