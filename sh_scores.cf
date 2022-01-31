@@ -1,4 +1,4 @@
-# Spamhaus's SpamAssassin setup version 20210909
+# Spamhaus's SpamAssassin setup version 20220131
 
 
 ifplugin Mail::SpamAssassin::Plugin::SH
@@ -59,6 +59,8 @@ ifplugin Mail::SpamAssassin::Plugin::SH
   score URIBL_DBL_BLOCKED	0.001
   score URIBL_ZEN_BLOCKED	0.001
   score RCVD_IN_ZEN_BLOCKED	0.001
+  
+  score SH_DBL_ABUSED_FULLHOST  6
 
 endif # Mail::SpamAssassin::Plugin::SH
 

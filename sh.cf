@@ -1,4 +1,4 @@
-# Spamhaus's SpamAssassin setup version 20210909
+# Spamhaus's SpamAssassin setup version 20220131
 
 
 ifplugin Mail::SpamAssassin::Plugin::SH
@@ -164,5 +164,9 @@ ifplugin Mail::SpamAssassin::Plugin::SH
 
   header RCVD_IN_ZEN_BLOCKED_OPENDNS    eval:check_rbl('zendqs-lastexternal', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.255\.255\.254$')
   header RCVD_IN_ZEN_BLOCKED    eval:check_rbl('zendqs-lastexternal', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.255\.255\.255$')
+  
+  body          SH_DBL_ABUSED_FULLHOST  eval:check_sh_hostname('your_DQS_key.dbl.dq.spamhaus.net', '^127\.0\.1\.10[2-6]$')
+  priority      SH_DBL_ABUSED_FULLHOST  -100 
+  describe      SH_DBL_ABUSED_FULLHOST  A hostname found in the email body is listed in DBL as abused_legit
 
 endif # Mail::SpamAssassin::Plugin::SH 

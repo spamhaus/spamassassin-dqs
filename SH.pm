@@ -16,20 +16,20 @@
 
 # The Spamhaus Technology SpamAssassin development crew can be reached
 # at <spamassassin at spamteq.com> for questions/suggestions related
-# with this plug-in exclusively.
-
-# version 20200825
-
-package Mail::SpamAssassin::Plugin::SH;
-
-use strict;
-use warnings;
-
-use Net::DNS;
-use Mail::SpamAssassin;
-use Mail::SpamAssassin::Plugin;
-use Mail::SpamAssassin::PerMsgStatus;
-use Socket;
+# with this plug-in exclusively.                                                                                                                                                                                                               
+                                                                                                                                                                                                                                               
+# version 20200825                                                                                                                                                                                                                             
+                                                                                                                                                                                                                                               
+package Mail::SpamAssassin::Plugin::SH;                                                                                                                                                                                                        
+                                                                                                                                                                                                                                               
+use strict;                                                                                                                                                                                                                                    
+use warnings;                                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                               
+use Net::DNS;                                                                                                                                                                                                                                  
+use Mail::SpamAssassin;                                                                                                                                                                                                                        
+use Mail::SpamAssassin::Plugin;                                                                                                                                                                                                                
+use Mail::SpamAssassin::PerMsgStatus;                                                                                                                                                                                                          
+use Socket;                                                                                                                                                                                                                                    
 use Mail::SpamAssassin::Logger;
 use Digest::SHA qw(sha256 );
 use Sys::Syslog qw( :DEFAULT setlogsock);
@@ -83,8 +83,46 @@ sub new {
   $self->register_eval_rule ( 'check_sh_attachment' );
   # Check email hashes
   $self->register_eval_rule ( 'check_sh_emails' );
-
+  # Finds URIs in the email body and checks their hostnames
+  $self->register_eval_rule ( 'check_sh_hostname' );
   return $self;
+}
+
+sub check_sh_hostname {
+
+  my ($self, $pms, $bodyref, $list, $subtest) = @_;
+  my $conf = $pms->{conf};
+  return 0 unless $self->{sh_available};
+  return 0 unless defined $list;
+
+  my $skip_domains = $conf->{uridnsbl_skip_domains};
+  $skip_domains = {}  if !$skip_domains;
+
+  my $body = join('', @{$bodyref});
+  my $rulename = $pms->get_current_eval_rule_name();
+
+  my @uris;
+  (@uris) = _get_body_uris($self,$pms,$bodyref);
+
+  foreach my $this_hostname (@uris) { 
+    if (!($skip_domains->{$this_hostname})) {
+      dbg("SHPlugin: (check_sh_hostname) checking ".$this_hostname);
+      my $lookup = $this_hostname.".".$list;
+      my $key = "SH:$lookup";
+      my $ent = {
+        key => $key,
+        zone => $list,
+        type => 'SH',
+        rulename => $rulename,
+        addr => $this_hostname,
+      };
+      $ent = $pms->{async}->bgsend_and_start_lookup($lookup, 'A', undef, $ent, sub {
+        my ($ent, $pkt) = @_;
+        $self->_finish_lookup($pms, $ent, $pkt, $subtest);
+      }, master_deadline => $pms->{master_deadline});
+    } 
+  }
+  return 0;
 }
 
 sub log_syslog {
@@ -185,6 +223,8 @@ sub _get_body_uris {
   my %seen;
   my @uris;
   foreach my $this_uri ( $body =~ /[a-zA-Z][a-zA-Z0-9+\-.]*:\/\/(?:[a-zA-Z0-9\-._~%!$&'()*+,;=]+@)?([a-zA-Z0-9\-._~%]+|↵\[[a-zA-Z0-9\-._~%!$&'()*+,;=:]+\])/g) { 
+    if (($this_uri eq "") || ($this_uri =~ m/\.\./) || (substr($this_uri, 0, 1) eq ".")) { next; }
+    if ((substr $this_uri, -1) eq ".") { chop $this_uri; }
     push (@uris, lc $this_uri) unless defined $seen{lc $this_uri};
     $seen{lc $this_uri} = 1;
   }
@@ -446,7 +486,7 @@ sub check_sh_emails {
       $email =~ s/(\+.*\@)/@/;
       my ($this_user, $this_domain )       = split('@', $email);
       if ($this_domain && !($skip_domains->{$this_domain})) {
-	# Remove dots from left part if rightpart is gmail.com
+        # Remove dots from left part if rightpart is gmail.com
         if ($email =~ /\@gmail\.com/) {
           $this_user =~ s/(\.)//g;
           $email = $this_user.'@'.$this_domain;
@@ -786,58 +826,58 @@ sub _finish_lookup {
 # ---------------------------------------------------------------------------
 
 sub lookup_a_record {
-	my ($self, $pms, $hname, $list, $rulename, $subtest) = @_;
-	
-	my $key = "A:" . $hname;
-	my $ent = {
-		key => $key,
-		zone => $list,
-		type => "SH",
-	};
+        my ($self, $pms, $hname, $list, $rulename, $subtest) = @_;
+
+        my $key = "A:" . $hname;
+        my $ent = {
+                key => $key,
+                zone => $list,
+                type => "SH",
+        };
         dbg("SHPlugin: launching lookup for $hname on $list");
-	$pms->{async}->bgsend_and_start_lookup(
-		$hname, 'A', undef, $ent,
-		sub {
-			my ($ent2,$pkt) = @_;
-			$self->continue_a_record_lookup($pms, $ent2, $pkt, $hname, $rulename, $subtest)
-			}, master_deadline => $pms->{master_deadline} );
+        $pms->{async}->bgsend_and_start_lookup(
+                $hname, 'A', undef, $ent,
+                sub {
+                        my ($ent2,$pkt) = @_;
+                        $self->continue_a_record_lookup($pms, $ent2, $pkt, $hname, $rulename, $subtest)
+                        }, master_deadline => $pms->{master_deadline} );
 }
 
 sub continue_a_record_lookup
 {
-	my ($self, $pms, $ent, $pkt, $hname, $rulename, $subtest) = @_;
-	
-	if (!$pkt)
-	{
-		# $pkt will be undef if the DNS query was aborted (e.g. timed out)
-		dbg("SHPlugin: continue_a_record_lookup aborted %s", $hname);
-		return;
-	}
-	dbg("SHPlugin: continue_a_record_lookup reached for %s", $hname);
-	
-	my @answer = $pkt->answer;
-	foreach my $rr (@answer)
-	{
-		if ($rr->type eq 'A')
-		{
-			my $ip_address = $rr->rdatastr;
-			dbg("SHPlugin: continue_a_record_lookup found A record for URI ".$hname.": ".$ip_address);
-			my $reversed = join ".", reverse split /[.]/, $ip_address;
-			my $lookup = $reversed.".".$ent->{zone};
-			my $key = "SH:$lookup";
-			my $ent2 = {
-				key => $key,
-				zone => $ent->{zone},
-				type => 'SH',
-				addr => $ip_address,
-				rulename => $rulename,
-				};
-			$ent = $pms->{async}->bgsend_and_start_lookup($lookup, 'A', undef, $ent2, sub {
-				my ($ent3, $pkt) = @_;
-				$self->_finish_lookup($pms, $ent3, $pkt, $subtest);
-				}, master_deadline => $pms->{master_deadline});
-		}
-	}
+        my ($self, $pms, $ent, $pkt, $hname, $rulename, $subtest) = @_;
+
+        if (!$pkt)
+        {
+                # $pkt will be undef if the DNS query was aborted (e.g. timed out)
+                dbg("SHPlugin: continue_a_record_lookup aborted %s", $hname);
+                return;
+        }
+        dbg("SHPlugin: continue_a_record_lookup reached for %s", $hname);
+
+        my @answer = $pkt->answer;
+        foreach my $rr (@answer)
+        {
+                if ($rr->type eq 'A')
+                {
+                        my $ip_address = $rr->rdatastr;
+                        dbg("SHPlugin: continue_a_record_lookup found A record for URI ".$hname.": ".$ip_address);
+                        my $reversed = join ".", reverse split /[.]/, $ip_address;
+                        my $lookup = $reversed.".".$ent->{zone};
+                        my $key = "SH:$lookup";
+                        my $ent2 = {
+                                key => $key,
+                                zone => $ent->{zone},
+                                type => 'SH',
+                                addr => $ip_address,
+                                rulename => $rulename,
+                                };
+                        $ent = $pms->{async}->bgsend_and_start_lookup($lookup, 'A', undef, $ent2, sub {
+                                my ($ent3, $pkt) = @_;
+                                $self->_finish_lookup($pms, $ent3, $pkt, $subtest);
+                                }, master_deadline => $pms->{master_deadline});
+                }
+        }
 }
 
 sub encode_base32 {
@@ -858,4 +898,3 @@ sub encode_base32 {
 }
 
 1;
-
