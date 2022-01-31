@@ -223,8 +223,8 @@ sub _get_body_uris {
   my %seen;
   my @uris;
   foreach my $this_uri ( $body =~ /[a-zA-Z][a-zA-Z0-9+\-.]*:\/\/(?:[a-zA-Z0-9\-._~%!$&'()*+,;=]+@)?([a-zA-Z0-9\-._~%]+|↵\[[a-zA-Z0-9\-._~%!$&'()*+,;=:]+\])/g) { 
+    if (($this_uri eq "") || ($this_uri =~ m/\.\./) || (substr($this_uri, 0, 1) eq ".")) { next; }
     if ((substr $this_uri, -1) eq ".") { chop $this_uri; }
-    if ($this_uri eq "") { next; } 
     push (@uris, lc $this_uri) unless defined $seen{lc $this_uri};
     $seen{lc $this_uri} = 1;
   }
