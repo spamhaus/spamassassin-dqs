@@ -18,6 +18,7 @@ This repository contains the configuration files and a plugin written for SpamAs
 - Installation instructions
 	- [Install from Github](#install-from-github)
 	- [Install from FreeBSD ports](#install-from-freebsd-ports)
+- [Testing your setup](#testing-your-setup)
 - [Plugin internals](#plugin-internals)
 - [Final recommendations](#final-recommendations)
 - [Support and feedback](#support-and-feedback)
@@ -254,6 +255,12 @@ Or, if using ports:
 	$ cd /usr/ports/mail/spamassassin-dqs
 	$ sudo make install
 ```
+
+## Testing your setup
+
+Once you succesfully installed the plugin, you could head to [http://blt.spamhaus.com](http://blt.spamhaus.com) and test if you have correctly installed everything. 
+
+**Please read the docs carefully**, as a "delivered" response with a red flag **doesn't always mean you missed something**; it depends on your setup. You should always check all the headers of any email that the BLT sends and look for spam headers, usually, but not always: "X-Spam-Flag: Yes" or "X-Spam: Yes".
 
 ***
 
