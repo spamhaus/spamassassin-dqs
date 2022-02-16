@@ -1,5 +1,10 @@
 Changelog for SpamAssassin DQS Plugin 
 
+- 160222
+	- Fixed a bug in hostname extraction that caused a lot of FNs
+	  - Please *do not* use version 1.2.0 and use this instead for best results
+	- Tagged version 1.2.1
+		  
 - 310122
 	- Added functions to check whole hostnames in DBL
 	- Minor fixes
