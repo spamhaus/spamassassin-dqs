@@ -18,7 +18,7 @@
 # at <spamassassin at spamteq.com> for questions/suggestions related
 # with this plug-in exclusively.
 
-# version 20200825
+# version 20220216
 
 package Mail::SpamAssassin::Plugin::SH;
 
