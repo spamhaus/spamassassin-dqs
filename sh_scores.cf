@@ -1,4 +1,4 @@
-# Spamhaus's SpamAssassin setup version 20210909
+# Spamhaus's SpamAssassin setup version 20220216
 
 
 ifplugin Mail::SpamAssassin::Plugin::SH
@@ -47,6 +47,8 @@ ifplugin Mail::SpamAssassin::Plugin::SH
   score	SH_HELO_DBL		8
   score	SH_HELO_DBL_ABUSED	0.001
   score SH_AUTHBL_AND_DBL_ABUSED	6
+  score SH_ZRD_BODY_FRESH	6
+  score SH_ZRD_BODY_VERY_FRESH	8
 
   # DQS wont block queries for open dns usage
   score URIBL_DBL_BLOCKED_OPENDNS	0
@@ -57,6 +59,8 @@ ifplugin Mail::SpamAssassin::Plugin::SH
   score URIBL_DBL_BLOCKED	0.001
   score URIBL_ZEN_BLOCKED	0.001
   score RCVD_IN_ZEN_BLOCKED	0.001
+
+  score SH_DBL_ABUSED_FULLHOST  6
 
 endif # Mail::SpamAssassin::Plugin::SH
 

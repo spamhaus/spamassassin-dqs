@@ -83,8 +83,46 @@ sub new {
   $self->register_eval_rule ( 'check_sh_attachment' );
   # Check email hashes
   $self->register_eval_rule ( 'check_sh_emails' );
-
+  # Finds URIs in the email body and checks their hostnames
+  $self->register_eval_rule ( 'check_sh_hostname' );
   return $self;
+}
+
+sub check_sh_hostname {
+
+  my ($self, $pms, $bodyref, $list, $subtest) = @_;
+  my $conf = $pms->{conf};
+  return 0 unless $self->{sh_available};
+  return 0 unless defined $list;
+
+  my $skip_domains = $conf->{uridnsbl_skip_domains};
+  $skip_domains = {}  if !$skip_domains;
+
+  my $body = join('', @{$bodyref});
+  my $rulename = $pms->get_current_eval_rule_name();
+
+  my @uris;
+  (@uris) = _get_body_uris($self,$pms,$bodyref);
+
+  foreach my $this_hostname (@uris) { 
+    if (!($skip_domains->{$this_hostname})) {
+      dbg("SHPlugin: (check_sh_hostname) checking ".$this_hostname);
+      my $lookup = $this_hostname.".".$list;
+      my $key = "SH:$lookup";
+      my $ent = {
+        key => $key,
+        zone => $list,
+        type => 'SH',
+        rulename => $rulename,
+        addr => $this_hostname,
+      };
+      $ent = $pms->{async}->bgsend_and_start_lookup($lookup, 'A', undef, $ent, sub {
+        my ($ent, $pkt) = @_;
+        $self->_finish_lookup($pms, $ent, $pkt, $subtest);
+      }, master_deadline => $pms->{master_deadline});
+    } 
+  }
+  return 0;
 }
 
 sub log_syslog {
@@ -181,12 +219,15 @@ sub set_config {
 
 sub _get_body_uris {
   my ($self,$pms, $bodyref) = @_;
-  my $body = join('', @{$bodyref});    
   my %seen;
   my @uris;
-  foreach my $this_uri ( $body =~ /[a-zA-Z][a-zA-Z0-9+\-.]*:\/\/(?:[a-zA-Z0-9\-._~%!$&'()*+,;=]+@)?([a-zA-Z0-9\-._~%]+|↵\[[a-zA-Z0-9\-._~%!$&'()*+,;=:]+\])/g) { 
-    push (@uris, lc $this_uri) unless defined $seen{lc $this_uri};
-    $seen{lc $this_uri} = 1;
+  my @parsed = $pms->get_uri_list(); 
+  foreach ( @parsed ) {
+    my ($domain, $host) = $self->{main}->{registryboundaries}->uri_to_domain($_);
+    if ( $host ) { 
+      push (@uris, lc $host) unless defined $seen{lc $host};
+      $seen{lc $host} = 1;
+    }
   }
   foreach my $this_uri (@uris) {
     dbg("SHPlugin: (_get_body_uris) found  ".$this_uri." in body");
