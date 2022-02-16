@@ -1,4 +1,3 @@
-
 # Using DQS with SpamAssassin
 
 This repository contains the configuration files and a plugin written for SpamAssassin, (https://spamassassin.apache.org/) for use with Spamhaus Technology Data Query Service (DQS) product.
@@ -19,6 +18,7 @@ This repository contains the configuration files and a plugin written for SpamAs
 - Installation instructions
 	- [Install from Github](#install-from-github)
 	- [Install from FreeBSD ports](#install-from-freebsd-ports)
+- [Testing your setup](#testing-your-setup)
 - [Plugin internals](#plugin-internals)
 - [Final recommendations](#final-recommendations)
 - [Support and feedback](#support-and-feedback)
@@ -256,6 +256,12 @@ Or, if using ports:
 	$ sudo make install
 ```
 
+## Testing your setup
+
+Once you succesfully installed the plugin, you could head to [http://blt.spamhaus.com](http://blt.spamhaus.com) and test if you have correctly installed everything. 
+
+**Please read the docs carefully**, as a "delivered" response with a red flag **doesn't always mean you missed something**; it depends on your setup. You should always check all the headers of any email that the BLT sends and look for spam headers, usually, but not always: "X-Spam-Flag: Yes" or "X-Spam: Yes".
+
 ***
 
 ## Plugin internals
@@ -282,6 +288,9 @@ This function checks the reverse DNS (rDNS) of the last untrusted relay in both 
 
  * `check_sh_bodyuri_ns`
  This function scans the email body and looks for URLs; when one is found it takes the domain's authoritative nameservers IPs and checks them in SBL (beta, not used, but you are encouraged to try it).
+ 
+ * `check_sh_hostname`
+ This function extracts whole hostnames starting from URLs in the email body and is used to check them in the abused-legit component of DBL
  
  * `check_sh_crypto`
  This functions looks for cryptowallets in the email body and checks them in HBL. As of today, we support the following cryptos:
