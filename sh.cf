@@ -32,7 +32,7 @@ ifplugin Mail::SpamAssassin::Plugin::SH
   header	RCVD_IN_XBL		eval:check_rbl('zendqs', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.[4567]$')
   tflags	RCVD_IN_XBL		net
 
-  header	__RCVD_IN_PBL		eval:check_rbl('zendqs', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.1[01]$')
+  header	__RCVD_IN_PBL		eval:check_rbl('zendqs-lastexternal', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.0\.0\.1[01]$')
   tflags	__RCVD_IN_PBL		net
   meta		RCVD_IN_PBL		__RCVD_IN_PBL
 
