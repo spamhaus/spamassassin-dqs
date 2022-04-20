@@ -1,4 +1,4 @@
-# Spamhaus's SpamAssassin setup version 20220216
+# Spamhaus's SpamAssassin setup version 20220420
 
 
 ifplugin Mail::SpamAssassin::Plugin::SH

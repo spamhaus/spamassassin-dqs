@@ -18,7 +18,7 @@
 # at <spamassassin at spamteq.com> for questions/suggestions related
 # with this plug-in exclusively.
 
-# version 20220216
+# version 20220420
 
 package Mail::SpamAssassin::Plugin::SH;
 
@@ -32,7 +32,6 @@ use Mail::SpamAssassin::PerMsgStatus;
 use Socket;
 use Mail::SpamAssassin::Logger;
 use Digest::SHA qw(sha256 );
-use Sys::Syslog qw( :DEFAULT setlogsock);
 
 our @ISA = qw(Mail::SpamAssassin::Plugin);
 
@@ -123,16 +122,6 @@ sub check_sh_hostname {
     } 
   }
   return 0;
-}
-
-sub log_syslog {
- my ($priority, $msg) = @_;
- return 0 unless ($priority =~ /info|err|debug/);
- setlogsock('unix');
- openlog("SHPlugin",'pid','mail');
- syslog($priority, $msg);
- closelog();
- return 1;
 }
 
 sub finish_parsing_end {
@@ -393,7 +382,7 @@ sub _get_headers_domains {
   # This extraction code has been heavily copypasted and slightly adapted from https://github.com/smfreegard/HashBL/blob/master/HashBL.pm
   my %seen;
   my @headers_domains;
-  my @headers = ('EnvelopeFrom', 'Sender', 'From', 'Reply-To');
+  my @headers = ('EnvelopeFrom', 'Sender', 'From', 'Reply-To', 'Resent-Sender','X-Envelope-From','Return-Path');
   foreach my $header (@headers) {
     if ($pms->get($header . ':addr')) {
       my $this_domain = $self->{'main'}->{'registryboundaries'}->uri_to_domain($pms->get( $header.':addr' ));
@@ -412,7 +401,7 @@ sub _get_headers_emails {
   # This extraction code has been heavily copypasted and slightly adapted from https://github.com/smfreegard/HashBL/blob/master/HashBL.pm
   my %seen;
   my @headers_emails;
-  my @headers = ('EnvelopeFrom', 'Sender', 'From', 'Reply-To');
+  my @headers = ('EnvelopeFrom', 'Sender', 'From', 'Reply-To', 'Resent-Sender','X-Envelope-From','Return-Path');
   foreach my $header (@headers) {
     my $email = lc($pms->get($header . ':addr'));
     if ($email) {
@@ -815,7 +804,6 @@ sub _finish_lookup {
   my @answer = $pkt->answer;
   foreach my $rr (@answer) {
     if ($rr->address =~ /$re/) {
-      if ($ent->{rulename} =~ /SH_EMAIL/) { log_syslog("info","Matched email: ".$ent->{addr}); }
       dbg("SHPlugin: Hit on Item $ent->{addr} for $ent->{rulename}");
       $pms->test_log($ent->{addr});
       $pms->got_hit($ent->{rulename}, '', ruletype => 'eval');
