@@ -1,5 +1,10 @@
 Changelog for SpamAssassin DQS Plugin 
 
+- 200422
+	- Removed useless syslog functions and made the plugin compatible with MDaemon
+	- Minor fixes
+	- Tagged version 1.2.1
+
 - 310122
 	- Added functions to check whole hostnames in DBL
 	- Minor fixes
