@@ -18,6 +18,7 @@ This repository contains the configuration files and a plugin written for SpamAs
 - Installation instructions
 	- [Install from Github](#install-from-github)
 	- [Install from FreeBSD ports](#install-from-freebsd-ports)
+	- [Install the plugin in a MDaemon server](#install-the-plugin-in-a-mdaemon-server)
 - [Testing your setup](#testing-your-setup)
 - [Plugin internals](#plugin-internals)
 - [Final recommendations](#final-recommendations)
@@ -255,6 +256,10 @@ Or, if using ports:
 	$ cd /usr/ports/mail/spamassassin-dqs
 	$ sudo make install
 ```
+
+#### Install the plugin in a MDaemon server
+
+Please see the file [MDaemon.md](Mdaemon.md) for instructions
 
 ## Testing your setup
 
