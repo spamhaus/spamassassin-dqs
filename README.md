@@ -259,7 +259,7 @@ Or, if using ports:
 
 #### Install the plugin in a MDaemon server
 
-Please see the file [MDaemon.md](Mdaemon.md) for instructions
+Please see the file [MDaemon.md](MDaemon.md) for instructions
 
 ## Testing your setup
 
