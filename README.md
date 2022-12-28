@@ -17,6 +17,9 @@ This repository contains the configuration files and a plugin written for SpamAs
 - [Conventions](#conventions)
 - Installation instructions
 	- [Install from Github](#install-from-github)
+		- [Check if your key is HBL enabled](#check-if-your-key-is-hbl-enabled)
+		- [Instructions for SpamAssassin 3.4.1 to 3.4.6](#instructions-for-spamassassin-341-to-346)
+		- [Instructions for SpamAssassin 4.0.0+](#instructions-for-spamassassin-400)
 	- [Install from FreeBSD ports](#install-from-freebsd-ports)
 	- [Install the plugin in a MDaemon server](#install-the-plugin-in-a-mdaemon-server)
 - [Testing your setup](#testing-your-setup)
@@ -131,45 +134,22 @@ A subdirectory called `spamassassin-dqs` will be created. Within it you will fin
 
 - `README.md`. This is just a pointer to this document.
 - `Changelog.md`. The changes log file
+- `MDaemon.md`. Instructions on how to install this plugin on MDaemon servers
 - `hbltest.sh`. A script that helps you know if your DQS key is HBL enabled
-- `sh.pre`. This file is the loader for the plugin
-- `SH.pm`. This is a dedicated SA plugin written by SH that overcomes some of SA's limitations
-- `sh.cf`. This file contains lookup redefinitions and will need to be edited (see below)
-- `sh_scores.cf`. In this file we override some of SA's default rule scoring
-- `sh_hbl.cf`. Definitions for HBL lookups
-- `sh_hbl_scores.cf`. Definitions for HBL lookups scores
 - `LICENSE`. The Apache software license
 - `NOTICE`. A file containing copyright notices
+- `3.4.1+/sh.pre`. This file is the loader for the plugin
+- `3.4.1+/SH.pm`. This is a dedicated SA plugin written by SH that overcomes some of SA's limitations
+- `3.4.1+/sh.cf`. This file contains lookup redefinitions and will need to be edited (see below)
+- `3.4.1+/sh_scores.cf`. In this file we override some of SA's default rule scoring
+- `3.4.1+/sh_hbl.cf`. Definitions for HBL lookups
+- `3.4.1+/sh_hbl_scores.cf`. Definitions for HBL lookups scores
+- `4.0.0+/sh.cf`. This file contains lookup redefinitions and will need to be edited (see below)
+- `4.0.0+/sh_scores.cf`. In this file we override some of SA's default rule scoring
+- `4.0.0+/sh_hbl.cf`. Definitions for HBL lookups
+- `4.0.0+/sh_hbl_scores.cf`. Definitions for HBL lookups scores
 
-Next, configure your DQS key. Assuming your key is `aip7yig6sahg6ehsohn5shco3z`, execute the following commands:
-
-```
-	$ cd spamassassin-dqs
-	$ sed -i -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
-	$ sed -i -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh_hbl.cf
-```
-
-If you are using FreeBSD, the commands change slightly:
-
-```
-	$ cd spamassassin-dqs
-	$ sed -i "" -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
-	$ sed -i "" -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh_hbl.cf
-```
-
-There will be no output, but the key will be inserted into `sh.cf` and `sh_hbl.cf` in all the needed places.
-
-Edit `sh.pre` with your editor of choice, and look at the first line:
-
-```
-	loadplugin       Mail::SpamAssassin::Plugin::SH <config_directory>/SH.pm
-```
-
-You will need to replace `<config_directory>` with your actual *configuration directory*. So, for example, if your *configuration directory* is `/etc/mail/spamassassin`, the line will become:
-
-```
-	loadplugin       Mail::SpamAssassin::Plugin::SH /etc/mail/spamassassin/SH.pm
-```
+#### Check if your key is HBL enabled
 
 We provide a simple script to help you verify whether your DQS key is HBL enabled or not. Use this script to understand what files to copy in your SpamAssassin config directory. You only need to run the script and input your DQS key.
 
@@ -193,7 +173,45 @@ If your key is not HBL enabled (meaning that you registered a FREE DQS key and d
 	Please *do not* copy sh_hbl.cf and sh_hbl_scores.cf
 ```
 
-Based on the output of the above script, copy the relevant .cf files in SA *configuration directory*.
+Now follow the instructions based on the version of SpamAssassin you have. If you don't know what version you are running, you can get it by running the following command:
+
+```
+	# spamassassin --version
+	SpamAssassin version 3.4.6
+	  running on Perl version 5.24.1
+```
+
+#### Instructions for SpamAssassin 3.4.1 to 3.4.6
+
+First, configure your DQS key. Assuming your key is `aip7yig6sahg6ehsohn5shco3z`, execute the following commands:
+
+```
+	$ cd spamassassin-dqs/3.4.1+
+	$ sed -i -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
+	$ sed -i -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh_hbl.cf
+```
+
+If you are using FreeBSD, the commands change slightly:
+
+```
+	$ cd spamassassin-dqs/3.4.1+
+	$ sed -i "" -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
+	$ sed -i "" -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh_hbl.cf
+```
+
+There will be no output, but the key will be inserted into `sh.cf` and `sh_hbl.cf` in all the needed places.
+
+Edit `sh.pre` with your editor of choice, and look at the first line:
+
+```
+	loadplugin       Mail::SpamAssassin::Plugin::SH <config_directory>/SH.pm
+```
+
+You will need to replace `<config_directory>` with your actual *configuration directory*. So, for example, if your *configuration directory* is `/etc/mail/spamassassin`, the line will become:
+
+```
+	loadplugin       Mail::SpamAssassin::Plugin::SH /etc/mail/spamassassin/SH.pm
+```
 
 If you have an HBL enabled key, and assuming the *configuration directory* is `/etc/mail/spamassassin` do the following:
 
@@ -215,7 +233,7 @@ If your key is *not* HBL enabled, this is what needs to be done:
 	# cp sh.pre /etc/mail/spamassassin
 ```
 
-We strongly suggest to not copy the HBL files if your key is not HBL enabled, as the lookups timout will very likely slow SA email processing.
+We strongly suggest to not copy the HBL files if your key is not HBL enabled, as the lookups timeout will very likely slow SA email processing.
 
 Next, test the setup by running:
 
@@ -237,7 +255,55 @@ In case you tried installing the plugin with a wrong SpamAssassin version (< 3.4
 	SHPlugin: Remove sh.pre file or update SpamAssassin
 ```
 
-Be sure to follow the instructions and remove all the previously copied files. As stated above, the plugin will work only on SpamAssassin 3.4.1 and above. 
+Be sure to follow the instructions and remove all the previously copied files. As stated above, the plugin will work only on SpamAssassin 3.4.1 up to 3.4.6. 
+
+#### Instructions for SpamAssassin 4.0.0+
+
+Please note that these rules have been tested by a limited number of people. They must be considered as a BETA. If you encounter any problem, and before reporting a bug, be sure that you are running the very latest SpamAssassin 4.0.x version.
+
+First, configure your DQS key. Assuming your key is `aip7yig6sahg6ehsohn5shco3z`, execute the following commands:
+
+```
+	$ cd spamassassin-dqs/4.0.0+
+	$ sed -i -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
+	$ sed -i -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh_hbl.cf
+```
+
+If you are using FreeBSD, the commands change slightly:
+
+```
+	$ cd spamassassin-dqs/4.0.0+
+	$ sed -i "" -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
+	$ sed -i "" -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh_hbl.cf
+```
+
+There will be no output, but the key will be inserted into `sh.cf` and `sh_hbl.cf` in all the needed places.
+
+If you have an HBL enabled key, and assuming the *configuration directory* is `/etc/mail/spamassassin` do the following:
+
+```
+	# cp sh.cf /etc/mail/spamassassin
+	# cp sh_scores.cf /etc/mail/spamassassin
+	# cp sh_hbl.cf /etc/mail/spamassassin
+	# cp sh_hbl_scores.cf /etc/mail/spamassassin
+```
+
+If your key is *not* HBL enabled, this is what needs to be done:
+
+```
+	# cp sh.cf /etc/mail/spamassassin
+	# cp sh_scores.cf /etc/mail/spamassassin
+```
+
+We strongly suggest to not copy the HBL files if your key is not HBL enabled, as the lookups timeout will very likely slow SA email processing.
+
+Next, test the setup by running:
+
+```
+	# spamassassin --lint
+```
+	
+This command checks the whole SA installation; if you don't see any output then congratulations! You successfully installed SH's SA setup. You only need to restart SpamAssassin to have the plugin loaded.
 
 ***
 

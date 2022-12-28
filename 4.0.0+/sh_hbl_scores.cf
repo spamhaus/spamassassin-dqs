@@ -1,7 +1,3 @@
-# Spamhaus's SpamAssassin setup version 20220420
-
-
-ifplugin Mail::SpamAssassin::Plugin::SH
 
   score         SH_HBL_FILE_MALWARE      10
   score         SH_HBL_FILE_SUSPICIOUS      10
@@ -12,6 +8,5 @@ ifplugin Mail::SpamAssassin::Plugin::SH
   score         SH_HBL_CW_LTC     10
   score         SH_HBL_CW_XRP     10
   score         SH_HBL_EMAILS     8
-
-endif # Mail::SpamAssassin::Plugin::SH
+  score         SH_HBL_EMAILS_GMAIL	8
 

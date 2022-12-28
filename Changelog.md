@@ -1,5 +1,9 @@
 Changelog for SpamAssassin DQS Plugin 
 
+- 281222
+	- Added support for SpamAssasin 4.0.0+
+	- Tagged version 1.3.0
+	
 - 200422
 	- Removed useless syslog functions and made the plugin compatible with MDaemon
 	- Minor fixes

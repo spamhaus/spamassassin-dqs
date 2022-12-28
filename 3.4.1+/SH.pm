@@ -822,6 +822,7 @@ sub lookup_a_record {
 		key => $key,
 		zone => $list,
 		type => "SH",
+		rulename => $rulename,
 	};
         dbg("SHPlugin: launching lookup for $hname on $list");
 	$pms->{async}->bgsend_and_start_lookup(

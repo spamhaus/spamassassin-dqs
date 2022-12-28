@@ -1,0 +1,43 @@
+# Spamhaus's SpamAssassin setup version 20220420
+
+  body          SH_HBL_FILE_MALWARE      eval:check_hashbl_attachments('_file.your_DQS_key.hbl.dq.spamhaus.net/A', 'sha256/max=10/shuffle', '^127\.0\.3\.10$')
+  describe      SH_HBL_FILE_MALWARE      An attachment's hash is known malware
+
+  body          SH_HBL_FILE_SUSPICIOUS      eval:check_hashbl_attachments('_file.your_DQS_key.hbl.dq.spamhaus.net/A', 'sha256/max=10/shuffle', '^127\.0\.3\.15$')
+  describe      SH_HBL_FILE_SUSPICIOUS      An attachment's hash is suspected to be malware
+
+  body          SH_HBL_CW_BTC     eval:check_hashbl_bodyre('_cw.your_DQS_key.hbl.dq.spamhaus.net', 'sha1/max=10/shuffle/case', '\b(?<!=)([13][a-km-zA-HJ-NP-Z1-9]{25,34}|bc1[acdefghjklmnpqrstuvwxyz234567890]{30,62})\b', '^127\.0\.3\.20$')
+  priority	SH_HBL_CW_BTC	  -100
+  describe      SH_HBL_CW_BTC     Malicious BTC address
+
+  body          SH_HBL_CW_ETH     eval:check_hashbl_bodyre('_cw.your_DQS_key.hbl.dq.spamhaus.net', 'sha1/max=10/shuffle/case', '\b(?<!=)(0x[a-fA-F0-9]{40})\b', '^127\.0\.3\.20$')
+  priority	SH_HBL_CW_ETH	  -100
+  describe      SH_HBL_CW_ETH     Malicious ETH address
+
+  body          SH_HBL_CW_BCH     eval:check_hashbl_bodyre('_cw.your_DQS_key.hbl.dq.spamhaus.net', 'sha1/max=10/shuffle/case', '\b(?<!=)(bitcoincash:(?:q|p)[a-z0-9]{41})\b', '^127\.0\.3\.20$')
+  priority	SH_HBL_CW_BCH	  -100
+  describe      SH_HBL_CW_BCH     Malicious BCH address
+
+  body          SH_HBL_CW_XMR     eval:check_hashbl_bodyre('_cw.your_DQS_key.hbl.dq.spamhaus.net', 'sha1/max=10/shuffle/case', '\b(?<!=)(4(?:[0-9]|[A-B])(?:.){93})\b', '^127\.0\.3\.20$')
+  priority	SH_HBL_CW_XMR	  -100
+  describe	SH_HBL_CW_XMR	  Malicious XMR address
+
+  body          SH_HBL_CW_LTC     eval:check_hashbl_bodyre('_cw.your_DQS_key.hbl.dq.spamhaus.net', 'sha1/max=10/shuffle/case', '\b(?<!=)([LM3][a-km-zA-HJ-NP-Z1-9]{26,33})\b', '^127\.0\.3\.20$')
+  priority      SH_HBL_CW_LTC     -100
+  describe      SH_HBL_CW_LTC     Malicious LTC address
+
+  body          SH_HBL_CW_XRP     eval:check_hashbl_bodyre('_cw.your_DQS_key.hbl.dq.spamhaus.net', 'sha1/max=10/shuffle/case', '\b(r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35})\b', '^127\.0\.3\.20$')
+  priority      SH_HBL_CW_XRP     -100
+  describe      SH_HBL_CW_XRP     Malicious XRP address
+
+  hashbl_email_domain_alias gmail.com googlemail.com
+  hashbl_acl_freemail gmail.com
+  header        SH_HBL_EMAILS_GMAIL	  eval:check_hashbl_emails('_email.your_DQS_key.hbl.dq.spamhaus.net/A', 'sha1/max=10/shuffle/nodot/notag', 'ALLFROM/Reply-To/body', '^127\.0\.3\.2$', 'freemail')
+  priority      SH_HBL_EMAILS_GMAIL	  -100
+  describe      SH_HBL_EMAILS_GMAIL	  Email address listed in email blocklist
+
+  header        SH_HBL_EMAILS	eval:check_hashbl_emails('_email.your_DQS_key.hbl.dq.spamhaus.net/A', 'sha1/max=10/shuffle/notag', 'ALLFROM/Reply-To/body', '^127\.0\.3\.2$')
+  priority      SH_HBL_EMAILS	-100
+  describe      SH_HBL_EMAILS	Email address listed in email blocklist
+
+
