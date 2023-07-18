@@ -850,7 +850,7 @@ sub continue_a_record_lookup
 	{
 		if ($rr->type eq 'A')
 		{
-			my $ip_address = $rr->rdatastr;
+			my $ip_address = $rr->rdstring;
 			dbg("SHPlugin: continue_a_record_lookup found A record for URI ".$hname.": ".$ip_address);
 			my $reversed = join ".", reverse split /[.]/, $ip_address;
 			my $lookup = $reversed.".".$ent->{zone};
