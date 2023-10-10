@@ -68,26 +68,26 @@
     endif # if can
   endif   # Mail::SpamAssassin::Plugin::URIDNSBL
 
-  urirhssub	SH_BODYURI_REVERSE_SBL	your_DQS_key.zen.dq.spamhaus.net.	A 127.0.0.2
+  uridnssub	SH_BODYURI_REVERSE_SBL	your_DQS_key.zen.dq.spamhaus.net.	A 127.0.0.2
   body		SH_BODYURI_REVERSE_SBL	eval:check_uridnsbl('SH_BODYURI_REVERSE_SBL')
   tflags	SH_BODYURI_REVERSE_SBL a
   priority	SH_BODYURI_REVERSE_SBL	-100
   describe	SH_BODYURI_REVERSE_SBL The corresponding A record of an URI contained in the body is listed in SBL
 
- urirhssub	SH_BODYURI_REVERSE_CSS	your_DQS_key.zen.dq.spamhaus.net.	A 127.0.0.3
+  uridnssub	SH_BODYURI_REVERSE_CSS	your_DQS_key.zen.dq.spamhaus.net.	A 127.0.0.3
   body		SH_BODYURI_REVERSE_CSS	eval:check_uridnsbl('SH_BODYURI_REVERSE_CSS')
   tflags	SH_BODYURI_REVERSE_CSS a
   priority	SH_BODYURI_REVERSE_CSS	-100
   describe	SH_BODYURI_REVERSE_CSS  The corresponding A record of an URI contained in the body is listed in CSS
 
-  urirhssub	SH_BODYURI_REVERSE_DROP	your_DQS_key.zen.dq.spamhaus.net.	A 127.0.0.9
+  uridnssub	SH_BODYURI_REVERSE_DROP	your_DQS_key.zen.dq.spamhaus.net.	A 127.0.0.9
   body		SH_BODYURI_REVERSE_DROP	eval:check_uridnsbl('SH_BODYURI_REVERSE_DROP')
   tflags	SH_BODYURI_REVERSE_DROP a
   priority	SH_BODYURI_REVERSE_DROP	-100
   describe	SH_BODYURI_REVERSE_DROP  The corresponding A record of an URI contained in the body is listed in DROP
 
-  urirhssub	SH_BODYURI_REVERSE_XBL	your_DQS_key.zen.dq.spamhaus.net.	A 127.0.0.4
-  body		SH_BODYURI_REVERSE_XBL	eval:check_uridnsbl('SH_BODYURI_REVERSE_DROP')
+  uridnssub	SH_BODYURI_REVERSE_XBL	your_DQS_key.zen.dq.spamhaus.net.	A 127.0.0.4
+  body		SH_BODYURI_REVERSE_XBL	eval:check_uridnsbl('SH_BODYURI_REVERSE_XBL')
   tflags	SH_BODYURI_REVERSE_XBL a
   priority	SH_BODYURI_REVERSE_XBL	-100
   describe	SH_BODYURI_REVERSE_XBL  The corresponding A record of an URI contained in the body is listed in XBL
