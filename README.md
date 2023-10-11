@@ -53,7 +53,7 @@ ZRD automatically adds newly-registered as well as previously-dormant domains to
 
 AuthBL is primarily designed for use by anyone operating a submission SMTP server. It is a list of IPs that are known to host bots that use stolen credentials to spam. If one of your customers gets their credentials stolen, AuthBL greatly mitigates the ability of botnets to abuse the account, and keeps your MTAs safe from collateral damage.
 
-HBL is a zone dedicated to deal with sextortions/scam cryptowallets, dropbox emails and malicious files.
+HBL is a zone dedicated to deal with sextortions/scam cryptowallets, dropbox emails, malicious files and malicious URLs.
 
 ***
 
@@ -78,7 +78,7 @@ The usage terms are [the same](https://www.spamhaus.org/organization/dnsblusage/
 
 With free DQS you have access to ZRD and AuthBL, and you must abide by the [free usage policy limits](https://www.spamhaus.org/organization/dnsblusage/) 
 
-With a paid subscription there is no query limit, and access to HBL (the new zone that deals with cryptovalues, emails and malware) is included. 
+With a paid subscription there is no query limit, and access to HBL (the new zone that deals with cryptovalues, emails, malware and malicious URLs) is included. 
 
 All the technical information about HBL is available [here](https://docs.spamhaustech.com/10-data-type-documentation/datasets/030-datasets.html#hbl)
 
@@ -95,6 +95,8 @@ Just go [here](https://www.spamhaustech.com/dqs/) and complete the registration 
 #### Prerequisites
 
 You need a DQS key along with an existing SpamAssassin 3.4.1+ installation on your system. These instructions do not cover the initial SpamAssassin installation. To correctly install SpamAssassin, please refer to instructions applicable to your SpamAssassin distribution.
+
+Since SpamAssassin 4.0.x replaced 3.4.x , we are only supporting installations on the 4.0.x branch. The version for 3.4.x stays here only for legacy, you are strongly encouraged to move to 4.0.x if you are still running the old branch.
 
 ***
 
@@ -259,7 +261,7 @@ Be sure to follow the instructions and remove all the previously copied files. A
 
 #### Instructions for SpamAssassin 4.0.0+
 
-Please note that these rules have been tested by a limited number of people. They must be considered as a BETA. If you encounter any problem, and before reporting a bug, be sure that you are running the very latest SpamAssassin 4.0.x version.
+Be sure that you are running the latest 4.0.x version of SpamAssassin.
 
 First, configure your DQS key. Assuming your key is `aip7yig6sahg6ehsohn5shco3z`, execute the following commands:
 
@@ -279,13 +281,27 @@ If you are using FreeBSD, the commands change slightly:
 
 There will be no output, but the key will be inserted into `sh.cf` and `sh_hbl.cf` in all the needed places.
 
+Edit `sh.pre` with your editor of choice, and look at the first line:
+
+```
+	loadplugin       Mail::SpamAssassin::Plugin::SH <config_directory>/SH.pm
+```
+
+You will need to replace `<config_directory>` with your actual *configuration directory*. So, for example, if your *configuration directory* is `/etc/mail/spamassassin`, the line will become:
+
+```
+	loadplugin       Mail::SpamAssassin::Plugin::SH /etc/mail/spamassassin/SH.pm
+```
+
 If you have an HBL enabled key, and assuming the *configuration directory* is `/etc/mail/spamassassin` do the following:
 
 ```
+	# cp SH.pm /etc/mail/spamassassin
 	# cp sh.cf /etc/mail/spamassassin
 	# cp sh_scores.cf /etc/mail/spamassassin
 	# cp sh_hbl.cf /etc/mail/spamassassin
 	# cp sh_hbl_scores.cf /etc/mail/spamassassin
+	# cp sh.pre /etc/mail/spamassassin
 ```
 
 If your key is *not* HBL enabled, this is what needs to be done:
@@ -293,6 +309,18 @@ If your key is *not* HBL enabled, this is what needs to be done:
 ```
 	# cp sh.cf /etc/mail/spamassassin
 	# cp sh_scores.cf /etc/mail/spamassassin
+```
+
+There is no need of copying `SH.pm` if your key is not HBL enabled, but you'll need to enable the HashBL native SpamAssassin plugin. If your *configuration directory* is `/etc/mail/spamassassin`, then edit the file `/etc/mail/spamassassin/v342.pre` , find the line:
+
+```
+    # loadplugin Mail::SpamAssassin::Plugin::HashBL
+```
+
+and remove the #, making it:
+
+```
+    loadplugin Mail::SpamAssassin::Plugin::HashBL
 ```
 
 We strongly suggest to not copy the HBL files if your key is not HBL enabled, as the lookups timeout will very likely slow SA email processing.
@@ -377,8 +405,10 @@ This functions computes the hash of all the attachments and checks them in HBL, 
 
 * `check_sh_emails`
 This functions collects all email addresses from headers and body and checks their hashes in HBL.
- 
- 
+
+* `check_urihash`
+This function has been borrowed from SURBL ([https://github.com/brt-surbl/URIHash](https://github.com/brt-surbl/URIHash)) and slightly modified. It's used to hash URLs and check them in HBL
+
  ***
  
 ## Final recommendations

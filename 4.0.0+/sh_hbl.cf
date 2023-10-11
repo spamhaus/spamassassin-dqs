@@ -1,3 +1,6 @@
+# Spamhaus's SpamAssassin setup version 20231011
+
+
 # Spamhaus's SpamAssassin setup version 20220420
 
   body          SH_HBL_FILE_MALWARE      eval:check_hashbl_attachments('_file.your_DQS_key.hbl.dq.spamhaus.net/A', 'sha256/max=10/shuffle', '^127\.0\.3\.10$')
@@ -40,4 +43,36 @@
   priority      SH_HBL_EMAILS	-100
   describe      SH_HBL_EMAILS	Email address listed in email blocklist
 
+ifplugin Mail::SpamAssassin::Plugin::SH
+
+  urihash_path_default [/?](?:[a-zA-Z0-9()_.=~!/-]|(?:%[0-9a-fA-F][0-9a-fA-F])){2,512}
+  urihash_acl_default l8.nu 2ww.me 4.fo abre.ai arweave.net bit.do bit.ly bitly.ws bom.so buff.ly c4rex.co cdn.discordapp.com cf-ipfs.com clck.ru clcr.me www.clck.ru cleanuri.com clicktracker.net cloudflare-ipfs.com usc1.contabostorage.com crustwebsites.net cutt.ly did.li dik.si dweb.link fleek.cool fleek.ipfs.io gg.gg ggle.io goo.su www.goo.su han.gl htl.li ht.ly httpslink.com iqy.im inx.lv ipfs.fleek.co ipfs.io gateway.ipfs.io itsssl.com ja.cat kortlink.dk kutt.it kuza.me lihi2.cc lil.ge lin.ee link.nn.ru linkmn.gr link-shortener.net ln.run lnkd.in lnkiy.in me-qr.com m1s.it mpago.la mq4.ru mub.me my.forms.app objects-us-east-1.dream.io url.zip ow.ly p.st pastebin.com peyg.ir piplynow.com ppt.cc ptpn4.id pxlme.me qrco.de rb.gy rebrand.ly reurl.cc rotf.lol rplg.co s3.amazonaws.com s3.us-west-1.amazonaws.com sfo3.digitaloceanspaces.com s.free.fr sgp1.digitaloceanspaces.com syd1.digitaloceanspaces.com sha.lk shln.me shrtco.de shorturl.ac shorturl.at shorturl.asia short-me.me shrinke.me siasky.net ssur.cc s.id s.lu sites.google.com storageapi.fleek.co storage.cloud.google.com substack.com surl.li t.co telegra.ph tiny.one tinylink.in tinyurl.com tny.im to.sv t.ly tyl.ke d8hxy.app.goo.gl peg3z.app.goo.gl ja2r7.app.goo.gl u.to uclck.ru url.com url.zip urlis.net urly.it urlzs.com urlz.fr url-s.xyz vk.cc vk.sv vo.la wa.me www.bit.do 1drv.ms zpr.io www.hbltest.com
+  header SH_URLHASH_DEFAULT eval:check_urihash('default', '_url.your_DQS_key.hbl.dq.spamhaus.net.', '^127\.0\.3\.30$')
+  tflags SH_URLHASH_DEFAULT net
+
+  urihash_path_noslash [/?](?:[a-zA-Z0-9()_.=~-]|(?:%[0-9a-fA-F][0-9a-fA-F])){2,512}
+  urihash_acl_noslash is.gd storage.googleapis.com commondatastorage.googleapis.com cld.pt short.hbltest.com
+  header SH_URLHASH_NOSLASH eval:check_urihash('noslash', '_url.your_DQS_key.hbl.dq.spamhaus.net.', '^127\.0\.3\.30$')
+  tflags SH_URLHASH_NOSLASH net
+
+  urihash_path_withqm [/?](?:[a-zA-Z0-9()_.=~/-?]|(?:%[0-9a-fA-F][0-9a-fA-F])){2,512}
+  urihash_acl_withqm api.whatsapp.com eblink4.com eblink5.com withqm.hbltest.com
+  header SH_URLHASH_WITHQM eval:check_urihash('withqm', '_url.your_DQS_key.hbl.dq.spamhaus.net.', '^127\.0\.3\.30$')
+  tflags SH_URLHASH_WITHQM net
+
+  urihash_path_all [/?](?:[a-zA-Z0-9()_.=~!/-]|(?:%[0-9a-fA-F][0-9a-fA-F])){2,512}
+  urihash_acl_all all
+  header SH_URLHASH_ALL eval:check_urihash('all', '_url.your_DQS_key.hbl.dq.spamhaus.net.', '^127\.0\.3\.30$')
+  tflags SH_URLHASH_ALL net
+  priority SH_URLHASH_ALL 10000
+
+  ifplugin Mail::SpamAssassin::Plugin::Shortcircuit
+    shortcircuit       SH_URLHASH_ALL        spam
+    shortcircuit       SH_URLHASH_WITHQM     spam
+    shortcircuit       SH_URLHASH_NOSLASH    spam
+    shortcircuit       SH_URLHASH_DEFAULT    spam
+    shortcircuit       SH_URLHASH_SHORTENERS spam
+  endif # Mail::SpamAssassin::Plugin::Shortcircuit
+
+endif # Mail::SpamAssassin::Plugin::SH
 
