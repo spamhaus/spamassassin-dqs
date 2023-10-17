@@ -1,5 +1,8 @@
 Changelog for SpamAssassin DQS Plugin 
 
+- 171023
+    - Tagged version 1.5.1
+
 - 111023
     - Added support for URLHash component
     - Minor fixes
