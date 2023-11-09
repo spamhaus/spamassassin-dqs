@@ -322,7 +322,7 @@ sub _add_desc {
     }
     if ($pms->{main}->{conf}->{urihash_add_describe_uri}) {
         #$email =~ s/\@/[at]/g; TODO
-        $pms->{conf}->{descriptions}->{$rulename} .= " ($uri)";
+        $pms->{conf}->{descriptions}->{$rulename} .= " [$uri]";
     }
 }
                                                 
