@@ -253,7 +253,13 @@ sub set_config {
       }
     }
   });
-
+  push(@cmds, {
+      setting => 'urihash_add_describe_uri',
+      default => 1,
+      type => $Mail::SpamAssassin::Conf::CONF_TYPE_NUMERIC,
+      }
+  );
+  $conf->{parser}->register_commands(\@cmds);
 }
 
 sub _get_body_uris {
