@@ -362,7 +362,7 @@ sub _lookup {
             return 0 if ($addr eq '');
             if ($addr =~ $prs->{zone_match}) {
                 dbg("HIT! $digest.$prs->{zone} = $addr ($uri)");
-                $self->_add_desc($pms, $uri, "URIHash hit at $prs->{zone}");
+                $self->_add_desc($pms, $uri, "URIHash hit at ");
                 return 1;
             }
             return 0;
@@ -387,7 +387,7 @@ sub _lookup {
                 $pms->{urihash_lookup_cache}{"$digest.$prs->{zone}"} = $rr->address;
                 if ($rr->address =~ $prs->{zone_match}) {
                     dbg("HIT! $digest.$prs->{zone} = $rr->{address} ($uri)");
-                    $self->_add_desc($pms, $uri, "URIHash hit at $prs->{zone}");
+                    $self->_add_desc($pms, $uri, "URIHash hit at ");
                     return 1;
                 }
                 else {
