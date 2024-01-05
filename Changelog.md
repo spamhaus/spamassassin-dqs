@@ -1,5 +1,11 @@
 Changelog for SpamAssassin DQS Plugin 
 
+- 050124
+    - Fixed broken rules
+
+- 11223
+    - Fixed orphaned rule name
+
 - 171023
     - Tagged version 1.5.1
 

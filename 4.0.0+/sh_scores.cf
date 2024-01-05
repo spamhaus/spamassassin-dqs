@@ -1,4 +1,4 @@
-# Spamhaus's SpamAssassin setup version 20231011
+# Spamhaus's SpamAssassin setup version 20240105
 
 
   score	RCVD_IN_AUTHBL		2.5
@@ -58,5 +58,6 @@
   score RCVD_IN_ZEN_BLOCKED	0.001
 
   score SH_DBL_ABUSED_FULLHOST  6
+  score	SH_SBL_URL	6
 
 

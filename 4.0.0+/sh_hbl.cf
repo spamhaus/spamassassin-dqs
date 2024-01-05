@@ -1,4 +1,4 @@
-# Spamhaus's SpamAssassin setup version 20231011
+# Spamhaus's SpamAssassin setup version 20240105
 
 
 # Spamhaus's SpamAssassin setup version 20220420
@@ -71,7 +71,6 @@ ifplugin Mail::SpamAssassin::Plugin::SH
     shortcircuit       SH_URLHASH_WITHQM     spam
     shortcircuit       SH_URLHASH_NOSLASH    spam
     shortcircuit       SH_URLHASH_DEFAULT    spam
-    shortcircuit       SH_URLHASH_SHORTENERS spam
   endif # Mail::SpamAssassin::Plugin::Shortcircuit
 
 endif # Mail::SpamAssassin::Plugin::SH

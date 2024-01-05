@@ -1,4 +1,4 @@
-# Spamhaus's SpamAssassin setup version 20231011
+# Spamhaus's SpamAssassin setup version 20240105
 
 
   score         SH_HBL_FILE_MALWARE      10

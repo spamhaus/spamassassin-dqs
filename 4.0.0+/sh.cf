@@ -1,4 +1,4 @@
-# Spamhaus's SpamAssassin setup version 20231011
+# Spamhaus's SpamAssassin setup version 20240105
 
 
 # Spamhaus's SpamAssassin setup version 20220420
@@ -165,3 +165,7 @@
   tflags	SH_DBL_ABUSED_FULLHOST notrim
   describe	SH_DBL_ABUSED_FULLHOST	A hostname found in the email body is listed in DBL as abused_legit
 
+  urirhssub	SH_SBL_URL	your_DQS_key.zen.dq.spamhaus.net. A 127.0.0.2
+  body		SH_SBL_URL	eval:check_uridnsbl('SH_SBL_URL')
+  describe	SH_SBL_URL	An URL's IP address is listed in Spamhaus SBL
+  tflags	SH_SBL_URL	net
