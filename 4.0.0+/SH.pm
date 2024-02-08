@@ -86,8 +86,15 @@ sub set_config {
       }
     }
   });
-
+  push(@cmds, {
+      setting => 'urihash_add_describe_uri',
+      default => 1,
+      type => $Mail::SpamAssassin::Conf::CONF_TYPE_NUMERIC,
+      }
+  );
+  $conf->{parser}->register_commands(\@cmds);
 }
+
 sub _finish_lookup {
   my ($self, $pms, $ent, $pkt,$subtest) = @_;
   my $re;
@@ -315,7 +322,7 @@ sub _add_desc {
     }
     if ($pms->{main}->{conf}->{urihash_add_describe_uri}) {
         #$email =~ s/\@/[at]/g; TODO
-        $pms->{conf}->{descriptions}->{$rulename} .= " ($uri)";
+        $pms->{conf}->{descriptions}->{$rulename} .= " [$uri]";
     }
 }
                                                 
