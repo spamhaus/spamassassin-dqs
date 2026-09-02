@@ -1,18 +1,16 @@
-# Using DQS with SpamAssassin
+# Using Blocklists via DNS Query with SpamAssassin
 
-This repository contains the configuration files and a plugin written for SpamAssassin, (https://spamassassin.apache.org/) for use with Spamhaus Technology Data Query Service (DQS) product.
+This repository contains the configuration files and a plugin written for SpamAssassin, (https://spamassassin.apache.org/) for use with Spamhaus Technology Blocklists via DNS Query product.
 
 ***
 
 ### Table of contents
-- [What is DQS](#what-is-dqs)?
-- [What zones are available with DQS](#what-zones-are-available-with-dqs)?
-- [What are the advantages of DQS](#what-are-the-advantages-of-dqs)?
-- [How does DQS Perform](#how-does-dqs-perform)?
-	- [HBL performance boost](#hbl-performance-boost)
-- [What is the licensing for DQS](#what-is-the-licensing-for-dqs)?
-- [What is the difference between paid-for and free DQS](#what-is-the-difference-between-paid-for-and-free-dqs)?
-- [How do I register a DQS key](#how-do-i-register-a-dqs-key)?
+- [What is Blocklists via DNS Query](#what-is-blocklists-via-DNS-Query)?
+- [What zones are available with Blocklists via DNS Query](#what-zones-are-available-with-blocklists-via-DNS-Query)?
+- [What are the advantages of Blocklists via DNS Query](#what-are-the-advantages-of-blocklists-via-DNS-Query)?
+- [What is the licensing for Blocklists via DNS Query](#what-is-the-licensing-for-blocklists-via-DNS-Query)?
+- [What is the difference between paid-for and free Blocklists via DNS Query](#what-is-the-difference-between-paid-for-and-free-blocklists-via-DNS-Query)?
+- [How do I register a Blocklists via DNS Query key](#how-do-i-register-a-blocklists-via-DNS-Query-key)?
 - [Prerequisites](#prerequisites)
 - [Conventions](#conventions)
 - Installation instructions
@@ -30,24 +28,24 @@ This repository contains the configuration files and a plugin written for SpamAs
 
 ***
 
-#### What is DQS?
+#### What is Blocklists via DNS Query?
 
-Data Query Service (DQS) is a set of DNSBLs, updated in real-time, operated by Spamhaus Technology ([https://www.spamhaustech.com](https://www.spamhaustech.com))
-
-***
-
-#### What zones are available with DQS?
-
-All zones, their definitions, and all possible return codes are documented [here](https://docs.spamhaustech.com/10-data-type-documentation/datasets/030-datasets.html)
+Blocklists via DNS Query is a set of DNSBLs, updated in real-time, operated by Spamhaus Technology ([https://www.spamhauscom](https://www.spamhaus.com))
 
 ***
 
-#### What are the advantages of DQS?
+#### What zones are available with Blocklists via DNS Query?
 
-With DQS, Spamhaus provides real time updates instead of the one-minute-delayed updates that are used by the public mirrors and the RSYNC feed.
-Sixty seconds doesn't seem like much, but when dealing with hailstormers they are *crucial*: the increase in catch rate between the public mirrors and DQS is mostly due to the real time updates.
+All zones, their definitions, and all possible return codes are documented [here](https://docs.spamhaus.com/10-data-type-documentation/datasets/030-datasets.html)
 
-Along with the above advantage, free DQS users will also get two new zones to query, Zero Reputation Domains (ZRD) and AuthBL. Paid-for DQS users will also get access to the Hash BlockList (HBL).
+***
+
+#### What are the advantages of Blocklists via DNS Query?
+
+With Blocklists via DNS Query, Spamhaus provides real time updates instead of the one-minute-delayed updates that are used by the public mirrors and the RSYNC feed.
+Sixty seconds doesn't seem like much, but when dealing with hailstormers they are *crucial*: the increase in catch rate between the public mirrors and Blocklists via DNS Query is mostly due to the real time updates.
+
+Along with the above advantage, free Blocklists via DNS Query users will also get two new zones to query, Zero Reputation Domains (ZRD) and AuthBL. Paid-for Blocklists via DNS Query users will also get access to the Hash BlockList (HBL).
 
 ZRD automatically adds newly-registered as well as previously-dormant domains to a block list for 24 hours. It also gives return codes that indicate the age of the domain (in hours) since first detection.
 
@@ -55,46 +53,36 @@ AuthBL is primarily designed for use by anyone operating a submission SMTP serve
 
 HBL is a zone dedicated to deal with sextortions/scam cryptowallets, dropbox emails, malicious files and malicious URLs.
 
-***
-
-#### How does DQS perform?
-
-You can [see it yourself](https://www.virusbulletin.com/testing/results/latest/vbspam-email-security). We are independently tested by Virus Bulletin, a company that tests both DQS and public mirror performances. The difference between them is that DQS catches up to 42% more spam than our public mirrors.
-NOTE: Results on VBSpam are achieved by using *only* the DQS dataset, meaning that if you just add an antivirus to your email filtering setup you can potentially reach the same performance as other commercial antispam products.
-
-#### HBL performance boost
-
-While we know that every scenario is different, our in the field observations made using the Virus Bulletin spam feed shows that including HBL in your antispam setup could roughly boost spam detection from 0,3% up to slightly more than 1%
 
 ***
 
-#### What is the licensing for DQS?
+#### What is the licensing for Blocklists via DNS Query?
 
-The usage terms are [the same](https://www.spamhaus.org/organization/dnsblusage/) as the terms for our public mirrors, meaning that if you already use our public mirrors you are entitled to a free DQS key.
+The usage terms are [the same](https://www.spamhaus.org/organization/dnsblusage/) as the terms for our public mirrors, meaning that if you already use our public mirrors you are entitled to a free Blocklists via DNS Query key.
 
 ***
 
-#### What is the difference between paid-for and free DQS?
+#### What is the difference between paid-for and free Blocklists via DNS Query?
 
-With free DQS you have access to ZRD and AuthBL, and you must abide by the [free usage policy limits](https://www.spamhaus.org/organization/dnsblusage/) 
+With free Blocklists via DNS Query you have access to ZRD and AuthBL, and you must abide by the [free usage policy limits](https://www.spamhaus.org/organization/dnsblusage/) 
 
 With a paid subscription there is no query limit, and access to HBL (the new zone that deals with cryptovalues, emails, malware and malicious URLs) is included. 
 
 All the technical information about HBL is available [here](https://docs.spamhaustech.com/10-data-type-documentation/datasets/030-datasets.html#hbl)
 
-If you have a free DQS subscription and would like to trial HBL, please send an email to [sales@spamteq.com](mailto:sales@spamteq.com) including your customer ID, and you will be contacted by one of our representative to activate a 30 day trial.
+If you have a free Blocklists via DNS Query subscription and would like to trial HBL, please send an email to [sales@spamteq.com](mailto:sales@spamteq.com) including your customer ID, and you will be contacted by one of our representative to activate a 30 day trial.
 
 ***
 
-#### How do I register a DQS key?
+#### How do I register a Blocklists via DNS Query key?
 
-Just go [here](https://www.spamhaustech.com/dqs/) and complete the registration procedure. After you register an account, go to [this](https://portal.spamhaustech.com/manuals/dqs/) page and you'll find the DQS key under section "1.0 Datafeed Query Service".
+Just go [here](https://www.spamhaus.com/data-access/real-time-dns-blocklists/) and complete the registration procedure. After you register an account, go to [this](https://portal.spamhaus.com/manuals/dqs/) page and you'll find the Blocklists via DNS Query key under section "1.0 Datafeed Query Service".
 
 ***
 
 #### Prerequisites
 
-You need a DQS key along with an existing SpamAssassin 3.4.1+ installation on your system. These instructions do not cover the initial SpamAssassin installation. To correctly install SpamAssassin, please refer to instructions applicable to your SpamAssassin distribution.
+You need a Blocklists via DNS Query key along with an existing SpamAssassin 3.4.1+ installation on your system. These instructions do not cover the initial SpamAssassin installation. To correctly install SpamAssassin, please refer to instructions applicable to your SpamAssassin distribution.
 
 Since SpamAssassin 4.0.x replaced 3.4.x , we are only supporting installations on the 4.0.x branch. The version for 3.4.x stays here only for legacy, you are strongly encouraged to move to 4.0.x if you are still running the old branch.
 
@@ -137,7 +125,7 @@ A subdirectory called `spamassassin-dqs` will be created. Within it you will fin
 - `README.md`. This is just a pointer to this document.
 - `Changelog.md`. The changes log file
 - `MDaemon.md`. Instructions on how to install this plugin on MDaemon servers
-- `hbltest.sh`. A script that helps you know if your DQS key is HBL enabled
+- `hbltest.sh`. A script that helps you know if your Blocklists via DNS Query key is HBL enabled
 - `LICENSE`. The Apache software license
 - `NOTICE`. A file containing copyright notices
 - `3.4.1+/sh.pre`. This file is the loader for the plugin
@@ -153,25 +141,25 @@ A subdirectory called `spamassassin-dqs` will be created. Within it you will fin
 
 #### Check if your key is HBL enabled
 
-We provide a simple script to help you verify whether your DQS key is HBL enabled or not. Use this script to understand what files to copy in your SpamAssassin config directory. You only need to run the script and input your DQS key.
+We provide a simple script to help you verify whether your Blocklists via DNS Query key is HBL enabled or not. Use this script to understand what files to copy in your SpamAssassin config directory. You only need to run the script and input your Blocklists via DNS Query key.
 
-Assuming the example key ```aip7yig6sahg6ehsohn5shco3z``` *is* DQS enabled, run the script and the output will confirm whether your key is HBL enabled:
+Assuming the example key ```aip7yig6sahg6ehsohn5shco3z``` *is* Blocklists via DNS Query enabled, run the script and the output will confirm whether your key is HBL enabled:
 
 ```
 	$ sh hbltest.sh
-	Please input your DQS key: aip7yig6sahg6ehsohn5shco3z
+	Please input your Blocklists via DNS Query key: aip7yig6sahg6ehsohn5shco3z
 	Looking up test record for HBL... done
-	Your DQS key aip7yig6sahg6ehsohn5shco3z is enabled for HBL
+	Your Blocklists via DNS Query key aip7yig6sahg6ehsohn5shco3z is enabled for HBL
 	You can copy sh_hbl.cf and sh_hbl_scores.cf if you want HBL enabled
 ```
 
-If your key is not HBL enabled (meaning that you registered a FREE DQS key and did not use a paid subscription) the output will be the following:
+If your key is not HBL enabled (meaning that you registered a FREE Blocklists via DNS Query key and did not use a paid subscription) the output will be the following:
 
 ```
 	$ sh hbltest.sh 
-	Please input your DQS key: aip7yig6sahg6ehsohn5shco3z
+	Please input your Blocklists via DNS Query key: aip7yig6sahg6ehsohn5shco3z
 	Looking up test record for HBL... done
-	Your DQS key aip7yig6sahg6ehsohn5shco3z is -=NOT=- enabled for HBL
+	Your Blocklists via DNS Query key aip7yig6sahg6ehsohn5shco3z is -=NOT=- enabled for HBL
 	Please *do not* copy sh_hbl.cf and sh_hbl_scores.cf
 ```
 
@@ -185,20 +173,20 @@ Now follow the instructions based on the version of SpamAssassin you have. If yo
 
 #### Instructions for SpamAssassin 3.4.1 to 3.4.6
 
-First, configure your DQS key. Assuming your key is `aip7yig6sahg6ehsohn5shco3z`, execute the following commands:
+First, configure your Blocklists via DNS Query key. Assuming your key is `aip7yig6sahg6ehsohn5shco3z`, execute the following commands:
 
 ```
 	$ cd spamassassin-dqs/3.4.1+
-	$ sed -i -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
-	$ sed -i -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh_hbl.cf
+	$ sed -i -e 's/your_query_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
+	$ sed -i -e 's/your_query_key/aip7yig6sahg6ehsohn5shco3z/g' sh_hbl.cf
 ```
 
 If you are using FreeBSD, the commands change slightly:
 
 ```
 	$ cd spamassassin-dqs/3.4.1+
-	$ sed -i "" -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
-	$ sed -i "" -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh_hbl.cf
+	$ sed -i "" -e 's/your_query_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
+	$ sed -i "" -e 's/your_query_key/aip7yig6sahg6ehsohn5shco3z/g' sh_hbl.cf
 ```
 
 There will be no output, but the key will be inserted into `sh.cf` and `sh_hbl.cf` in all the needed places.
@@ -263,20 +251,20 @@ Be sure to follow the instructions and remove all the previously copied files. A
 
 Be sure that you are running the latest 4.0.x version of SpamAssassin.
 
-First, configure your DQS key. Assuming your key is `aip7yig6sahg6ehsohn5shco3z`, execute the following commands:
+First, configure your Blocklists via DNS Query key. Assuming your key is `aip7yig6sahg6ehsohn5shco3z`, execute the following commands:
 
 ```
 	$ cd spamassassin-dqs/4.0.0+
-	$ sed -i -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
-	$ sed -i -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh_hbl.cf
+	$ sed -i -e 's/your_dqs_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
+	$ sed -i -e 's/your_dqs_key/aip7yig6sahg6ehsohn5shco3z/g' sh_hbl.cf
 ```
 
 If you are using FreeBSD, the commands change slightly:
 
 ```
 	$ cd spamassassin-dqs/4.0.0+
-	$ sed -i "" -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
-	$ sed -i "" -e 's/your_DQS_key/aip7yig6sahg6ehsohn5shco3z/g' sh_hbl.cf
+	$ sed -i "" -e 's/your_dqs_key/aip7yig6sahg6ehsohn5shco3z/g' sh.cf
+	$ sed -i "" -e 's/your_dqs_key/aip7yig6sahg6ehsohn5shco3z/g' sh_hbl.cf
 ```
 
 There will be no output, but the key will be inserted into `sh.cf` and `sh_hbl.cf` in all the needed places.
@@ -412,10 +400,6 @@ This function has been borrowed from SURBL ([https://github.com/brt-surbl/URIHas
  ***
  
 ## Final recommendations
- 
-The configuration in the VBSpam survey makes exclusive use of our data, since our goal was to certify their quality, and to keep an eye on how we perform in the field.
-
-While the results are reasonably good, the malware/phishing scoring can certainly be improved by employing some additional actions that we recommend.
 
 - Install an antivirus software on your mailserver;
 - The modern rule of thumb for receiving email should be to "stay defensive", which is why we recommend doing basic attachment filtering by dropping all emails that contains potentially hazardous attachments, at *minimum* all file extensions that match this regex:
@@ -428,10 +412,12 @@ While the results are reasonably good, the malware/phishing scoring can certainl
 
 ## Support and feedback
 
-We would be happy to receive your feedback! If you notice any problems with this installation, please open a Github issue and we'll do our best to help you.
+We would be happy to receive your feedback! If you notice any problems with this installation, please use your Spamhaus portal account to reach out or fill out a contact form here
 
 Remember that we are only going to support the latest version, so before opening an issue, please be sure to be running the up-to-date code from this Github repository.
 
 ## Acknowledgements
 
 We'd like to thank everyone for their suggestions and contributions!
+
+
