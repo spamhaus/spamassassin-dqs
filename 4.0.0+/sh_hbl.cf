@@ -39,7 +39,8 @@
   priority      SH_HBL_EMAILS_GMAIL	  -100
   describe      SH_HBL_EMAILS_GMAIL	  Email address listed in email blocklist
 
-  header        SH_HBL_EMAILS	eval:check_hashbl_emails('_email.your_DQS_key.hbl.dq.spamhaus.net/A', 'sha1/max=10/shuffle/notag', 'ALLFROM/Reply-To/body', '^127\.0\.3\.2$')
+  hashbl_acl_all = !gmail.com
+  header        SH_HBL_EMAILS	eval:check_hashbl_emails('_email.your_DQS_key.hbl.dq.spamhaus.net/A', 'sha1/max=10/shuffle/notag', 'ALLFROM/Reply-To/body', '^127\.0\.3\.2$', 'all')
   priority      SH_HBL_EMAILS	-100
   describe      SH_HBL_EMAILS	Email address listed in email blocklist
 
