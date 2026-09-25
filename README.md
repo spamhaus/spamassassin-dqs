@@ -1,6 +1,6 @@
-# Using Blocklists via DNS Query with SpamAssassin
+# Using Blocklists via DNS Query (DQS) with SpamAssassin
 
-This repository contains the configuration files and a plugin written for SpamAssassin, (https://spamassassin.apache.org/) for use with Spamhaus Technology Blocklists via DNS Query product.
+This repository contains configuration files for SpamAssassin, (https://spamassassin.apache.org/) for use with the Spamhaus Technology Blocklists via DNS Query product, formerly know as the Data Query Service. 
 
 ***
 
