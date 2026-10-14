@@ -297,6 +297,7 @@ If your key is *not* HBL enabled, this is what needs to be done:
 ```
 	# cp sh.cf /etc/mail/spamassassin
 	# cp sh_scores.cf /etc/mail/spamassassin
+        # cp sh.pre /etc/mail/spamassassin
 ```
 
 There is no need of copying `SH.pm` if your key is not HBL enabled, but you'll need to enable the HashBL native SpamAssassin plugin. If your *configuration directory* is `/etc/mail/spamassassin`, then edit the file `/etc/mail/spamassassin/v342.pre` , find the line:
