@@ -159,7 +159,7 @@
   header RCVD_IN_ZEN_BLOCKED    eval:check_rbl('zendqs-lastexternal', 'your_DQS_key.zen.dq.spamhaus.net.', '^127\.255\.255\.255$')
 
 
-  urirhssub	SH_DBL_ABUSED_FULLHOST	your_DQS_key.dbl.dq.spamhaus.net.	A 127.0.1.102-106
+  urirhssub	SH_DBL_ABUSED_FULLHOST	your_DQS_key.dbl.dq.spamhaus.net.	A 127.0.1.102-127.0.1.106
   body		SH_DBL_ABUSED_FULLHOST	eval:check_uridnsbl('SH_DBL_ABUSED_FULLHOST')
   priority	SH_DBL_ABUSED_FULLHOST	-100
   tflags	SH_DBL_ABUSED_FULLHOST notrim
